@@ -2,35 +2,45 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#0B1B3F">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="야구기록">
 <title>⚾ 야구 기록</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
 :root {
   --navy: #0B1B3F;
-  --navy-deep: #060F26;
-  --navy-soft: #1B2D5C;
+  --navy-deep: #050C20;
+  --navy-soft: #1C2B55;
   --sky: #4A9FE0;
-  --sky-deep: #2E7CB8;
-  --sky-soft: #B8DCF5;
+  --sky-deep: #2978B5;
+  --sky-soft: #C2E0F5;
+  --sky-pale: #E8F3FB;
   --gold: #F2B617;
-  --gold-soft: #FFE08A;
-  --bg: #F5F2EA;
+  --gold-deep: #C99613;
+  --gold-soft: #FDE8A8;
+  --gold-pale: #FEF6D9;
+  --green: #2D9C7F;
+  --green-soft: #D8EFE6;
+  --bg: #F6F3EA;
   --card: #FFFFFF;
-  --card-alt: #FAFAF7;
+  --card-alt: #FBFAF5;
   --text: #1A1F36;
   --text-soft: #6B7280;
   --text-mute: #9CA3AF;
   --line: #E5E7EB;
   --line-soft: #F1F2F4;
   --danger: #DC2626;
-  --shadow: 0 1px 3px rgba(11, 27, 63, 0.08);
-  --shadow-lg: 0 10px 30px rgba(11, 27, 63, 0.18);
+  --danger-soft: #FEE2E2;
+  --shadow: 0 1px 3px rgba(11, 27, 63, 0.06), 0 1px 2px rgba(11, 27, 63, 0.04);
+  --shadow-md: 0 4px 12px rgba(11, 27, 63, 0.10);
+  --shadow-lg: 0 12px 32px rgba(11, 27, 63, 0.18);
   --num-font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -46,16 +56,7 @@ html, body {
   font-feature-settings: 'tnum' 1;
 }
 body { min-height: 100vh; min-height: 100dvh; }
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-weight: 600;
-  color: inherit;
-  -webkit-appearance: none;
-}
+button { font-family: inherit; cursor: pointer; border: none; background: none; font-weight: 600; color: inherit; -webkit-appearance: none; }
 input { font-family: inherit; }
 
 .app {
@@ -67,7 +68,7 @@ input { font-family: inherit; }
   position: relative;
 }
 
-/* HEADER */
+/* ============== HEADER ============== */
 .header {
   background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 100%);
   color: white;
@@ -75,7 +76,15 @@ input { font-family: inherit; }
   position: sticky;
   top: 0;
   z-index: 30;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 14px rgba(0,0,0,0.18);
+}
+.header::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold) 70%, transparent 100%);
+  opacity: 0.6;
 }
 .header-top {
   display: flex;
@@ -84,60 +93,59 @@ input { font-family: inherit; }
   padding-top: 14px;
 }
 .brand {
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  letter-spacing: -0.3px;
 }
-.brand .ball { font-size: 22px; }
-.brand .gold-text {
-  color: var(--gold);
+.brand-ball {
+  font-size: 22px;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+}
+.brand-main {
   font-weight: 900;
-  letter-spacing: 1.5px;
+  font-size: 17px;
+  color: var(--gold);
+  letter-spacing: 1px;
 }
-.brand .sub {
-  color: var(--sky-soft);
+.brand-sub {
   font-weight: 500;
-  font-size: 13px;
-  letter-spacing: 0.5px;
+  font-size: 12.5px;
+  color: var(--sky-soft);
+  letter-spacing: 0.4px;
 }
 .head-actions { display: flex; gap: 6px; }
 .icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: 12px;
   background: rgba(255,255,255,0.08);
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
   transition: background 0.15s;
 }
-.icon-btn:active { background: rgba(255,255,255,0.2); }
+.icon-btn:active { background: rgba(255,255,255,0.22); }
+.icon-btn svg { display: block; }
 
-/* GAME BAR */
-.game-bar {
-  margin-top: 14px;
-}
+/* Game bar */
+.game-bar { margin-top: 14px; }
 .game-info {
   background: rgba(255,255,255,0.08);
   padding: 11px 14px;
   border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   text-align: left;
+  transition: background 0.15s;
 }
-.game-info:active { background: rgba(255,255,255,0.16); }
+.game-info:active { background: rgba(255,255,255,0.18); }
+.game-info-text { flex: 1; min-width: 0; }
 .game-info .label {
-  color: var(--sky-soft);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 2px;
 }
@@ -148,13 +156,13 @@ input { font-family: inherit; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.game-info .arrow { font-size: 11px; opacity: 0.5; margin-left: auto; }
+.game-info .arrow { font-size: 11px; opacity: 0.55; flex-shrink: 0; }
 
-/* TABS */
+/* Tabs */
 .tabs {
   display: flex;
   margin-top: 12px;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0,0,0,0.28);
   padding: 4px;
   border-radius: 12px;
   gap: 2px;
@@ -167,104 +175,176 @@ input { font-family: inherit; }
   font-size: 13px;
   font-weight: 700;
   transition: all 0.18s;
+  letter-spacing: -0.2px;
 }
 .tab.active {
   background: var(--gold);
   color: var(--navy);
-  box-shadow: 0 2px 6px rgba(242, 182, 23, 0.3);
+  box-shadow: 0 2px 8px rgba(242, 182, 23, 0.35);
 }
 
-/* CONTENT */
 .content { padding: 16px 16px 0; }
 
-/* PLAYER CARD */
+/* ============== PLAYER CARD ============== */
 .player-card {
   background: var(--card);
-  border-radius: 18px;
-  padding: 16px;
+  border-radius: 20px;
+  padding: 14px 14px 12px;
   margin-bottom: 12px;
   box-shadow: var(--shadow);
   border: 1px solid var(--line-soft);
+  position: relative;
+  overflow: hidden;
 }
+.player-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent, var(--sky));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.player-card.has-score::before { opacity: 1; }
+
 .player-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  gap: 10px;
+  gap: 12px;
+  padding: 4px 4px 12px;
 }
-.player-id {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  flex: 1;
-  min-width: 0;
-}
-.player-num {
-  background: var(--navy);
-  color: var(--gold);
-  font-size: 15px;
-  font-weight: 800;
-  width: 36px;
-  height: 36px;
+.avatar {
+  width: 46px; height: 46px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: white;
+  background: var(--avatar-bg, var(--sky));
+  letter-spacing: -1px;
   flex-shrink: 0;
-  letter-spacing: -0.5px;
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
 }
-.player-num.no-num { color: var(--sky-soft); font-size: 13px; }
+.avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 0;
+}
+.avatar .num-badge { z-index: 2; }
+.avatar .num-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -3px;
+  background: var(--navy);
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 8px;
+  border: 2px solid var(--card);
+  letter-spacing: 0;
+  min-width: 18px;
+  text-align: center;
+}
+.player-meta { flex: 1; min-width: 0; }
 .player-name {
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.player-sub {
+  font-size: 12px;
+  color: var(--text-soft);
+  margin-top: 2px;
+  font-weight: 600;
+}
+.player-sub b { color: var(--navy); font-weight: 800; }
 .player-score {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 900;
   color: var(--navy);
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
 }
 .player-score.negative { color: var(--danger); }
-.player-score .pa-zero {
-  font-size: 12px;
-  font-weight: 600;
+.player-score.zero { color: var(--text-mute); }
+.player-close {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
   color: var(--text-mute);
-  display: block;
-  margin-top: 2px;
-  letter-spacing: 0;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-alt);
+  z-index: 2;
 }
+.player-close:active { background: var(--danger-soft); color: var(--danger); }
 
+/* Stat groups */
+.stat-group { margin-bottom: 8px; }
+.stat-group-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: var(--text-mute);
+  padding: 0 4px 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+}
+.stat-group-label .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--group-color, var(--text-mute));
+}
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 .stat-cell {
   background: var(--card-alt);
   border: 1px solid var(--line-soft);
   border-radius: 12px;
-  padding: 8px 4px 6px;
+  padding: 7px 4px 6px;
+  transition: background 0.1s;
 }
-.stat-cell.highlight-pa {
-  background: linear-gradient(180deg, #FDF6E0 0%, #FBF1CC 100%);
-  border-color: var(--gold-soft);
-}
+.stat-cell.pos { background: linear-gradient(180deg, #E8F8F1 0%, #DCF1E6 100%); border-color: #C2E5D2; }
+.stat-cell.neg { background: linear-gradient(180deg, #FBF3F3 0%, #F5E8E8 100%); border-color: #EBD0D0; }
 .stat-label {
   font-size: 11px;
-  color: var(--text-soft);
   font-weight: 700;
+  color: var(--label-color, var(--text-soft));
   text-align: center;
-  margin-bottom: 4px;
-  letter-spacing: 0.3px;
+  margin-bottom: 3px;
+  letter-spacing: -0.2px;
 }
-.stat-cell.highlight-pa .stat-label { color: #8A6D0F; }
+.stat-label .pts {
+  font-size: 9px;
+  font-weight: 700;
+  margin-left: 2px;
+  opacity: 0.7;
+  letter-spacing: 0;
+}
+.stat-cell.pos .stat-label { color: #1F7A5C; }
+.stat-cell.neg .stat-label { color: #A03333; }
 .stat-controls {
   display: flex;
   align-items: center;
@@ -272,69 +352,102 @@ input { font-family: inherit; }
   padding: 0 2px;
 }
 .stat-btn {
-  width: 34px;
-  height: 34px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   background: var(--card);
   color: var(--navy);
   border: 1.5px solid var(--line);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.08s, background 0.12s;
+  transition: transform 0.08s, background 0.12s, color 0.12s;
 }
-.stat-btn:active { transform: scale(0.88); }
-.stat-btn.minus { color: var(--text-soft); }
-.stat-btn.plus {
-  color: white;
-  background: var(--sky);
-  border-color: var(--sky);
-}
-.stat-btn.plus:active { background: var(--sky-deep); }
-.stat-cell.highlight-pa .stat-btn.plus { background: var(--gold); border-color: var(--gold); color: var(--navy); }
-
+.stat-btn:active { transform: scale(0.85); }
+.stat-btn.minus { color: var(--text-mute); }
+.stat-cell.pos .stat-btn.plus { background: var(--green); border-color: var(--green); color: white; }
+.stat-cell.pos .stat-btn.plus:active { background: #237259; }
+.stat-cell.neg .stat-btn.plus { background: var(--text-soft); border-color: var(--text-soft); color: white; }
+.stat-cell.neg .stat-btn.plus:active { background: var(--text); }
+.stat-cell:not(.pos):not(.neg) .stat-btn.plus { background: var(--sky); border-color: var(--sky); color: white; }
+.stat-cell:not(.pos):not(.neg) .stat-btn.plus:active { background: var(--sky-deep); }
 .stat-value {
   font-size: 22px;
-  font-weight: 800;
-  min-width: 28px;
+  font-weight: 900;
+  min-width: 22px;
   text-align: center;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.5px;
+  letter-spacing: -1px;
+  color: var(--navy);
 }
+.stat-cell.pos .stat-value { color: #1F7A5C; }
+.stat-cell.neg .stat-value { color: #A03333; }
 
-.player-foot {
+/* PA row (full width) */
+.pa-row {
+  margin-top: 8px;
+  background: linear-gradient(135deg, #FEF6D9 0%, #FDE8A8 100%);
+  border: 1.5px solid var(--gold-soft);
+  border-radius: 14px;
+  padding: 10px 12px;
   display: flex;
-  justify-content: flex-end;
-  margin-top: 12px;
-  gap: 4px;
-  padding-top: 10px;
-  border-top: 1px solid var(--line-soft);
+  align-items: center;
+  gap: 10px;
 }
-.foot-btn {
-  font-size: 12px;
-  color: var(--text-soft);
-  padding: 6px 10px;
-  border-radius: 6px;
+.pa-info { flex: 1; min-width: 0; }
+.pa-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #8A6D0F;
+  letter-spacing: 0.6px;
+  margin-bottom: 1px;
+}
+.pa-detail {
+  font-size: 11px;
+  color: #A37C12;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.foot-btn:active { background: var(--bg); }
-.foot-btn.danger { color: var(--danger); }
+.pa-detail b { font-weight: 800; color: #6E5408; }
+.pa-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.pa-controls .stat-btn {
+  background: var(--card);
+  border-color: var(--gold-deep);
+  color: var(--gold-deep);
+  width: 34px; height: 34px;
+}
+.pa-controls .stat-btn.plus {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+.pa-controls .stat-btn.plus:active { background: var(--gold-deep); }
+.pa-controls .stat-value {
+  font-size: 26px;
+  color: var(--navy);
+  min-width: 30px;
+}
 
-/* ADD FAB */
+/* ============== ADD FAB ============== */
 .add-fab {
   position: fixed;
   bottom: calc(20px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(calc(360px - 56px - 16px));
-  width: 56px;
-  height: 56px;
-  border-radius: 28px;
+  width: 58px; height: 58px;
+  border-radius: 29px;
   background: var(--navy);
   color: var(--gold);
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 300;
   box-shadow: var(--shadow-lg);
   z-index: 20;
@@ -343,17 +456,17 @@ input { font-family: inherit; }
   justify-content: center;
   transition: transform 0.1s;
 }
-.add-fab:active { transform: translateX(calc(360px - 56px - 16px)) scale(0.94); }
+.add-fab:active { transform: translateX(calc(360px - 56px - 16px)) scale(0.92); }
 @media (max-width: 760px) {
   .add-fab { left: auto; right: 20px; transform: none; }
-  .add-fab:active { transform: scale(0.94); }
+  .add-fab:active { transform: scale(0.92); }
 }
 
-/* SUB TOGGLE (rank view) */
+/* ============== RANK / 점수판 ============== */
 .sub-toggle {
   display: flex;
   background: var(--card);
-  border-radius: 11px;
+  border-radius: 12px;
   padding: 3px;
   margin-bottom: 12px;
   border: 1px solid var(--line);
@@ -364,7 +477,7 @@ input { font-family: inherit; }
   padding: 9px;
   font-size: 12.5px;
   color: var(--text-soft);
-  border-radius: 8px;
+  border-radius: 9px;
   font-weight: 700;
 }
 .sub-toggle button.active {
@@ -372,7 +485,34 @@ input { font-family: inherit; }
   color: white;
 }
 
-/* RANK LIST */
+.share-bar {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
+  color: white;
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+}
+.share-bar .info { flex: 1; }
+.share-bar .info .t { font-weight: 800; font-size: 14px; }
+.share-bar .info .s { font-size: 11.5px; color: var(--sky-soft); margin-top: 2px; font-weight: 500; }
+.share-btn {
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 9px 14px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.1s;
+}
+.share-btn:active { opacity: 0.8; }
+
 .rank-list {
   background: var(--card);
   border-radius: 16px;
@@ -382,14 +522,13 @@ input { font-family: inherit; }
 .rank-row {
   display: flex;
   align-items: center;
-  padding: 14px 14px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--line-soft);
-  gap: 10px;
+  gap: 11px;
 }
 .rank-row:last-child { border-bottom: none; }
 .rank-num {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   border-radius: 50%;
   background: var(--bg);
   color: var(--text-soft);
@@ -400,33 +539,47 @@ input { font-family: inherit; }
   justify-content: center;
   flex-shrink: 0;
 }
-.rank-row.top1 .rank-num { background: linear-gradient(135deg, #FFD56A, var(--gold)); color: var(--navy); box-shadow: 0 3px 8px rgba(242,182,23,0.35); }
-.rank-row.top2 .rank-num { background: linear-gradient(135deg, #DCDCDC, #B0B0B0); color: white; }
+.rank-row.top1 .rank-num { background: linear-gradient(135deg, #FFE08A, var(--gold)); color: var(--navy); box-shadow: 0 4px 10px rgba(242,182,23,0.4); }
+.rank-row.top2 .rank-num { background: linear-gradient(135deg, #E2E2E2, #ABABAB); color: white; }
 .rank-row.top3 .rank-num { background: linear-gradient(135deg, #E2A878, #B5703D); color: white; }
-
+.rank-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  color: white;
+  background: var(--avatar-bg, var(--sky));
+  flex-shrink: 0;
+  letter-spacing: -1px;
+}
 .rank-info { flex: 1; min-width: 0; }
-.rank-name-row { display: flex; align-items: center; gap: 6px; }
-.rank-num-badge {
+.rank-name { font-weight: 800; font-size: 15px; letter-spacing: -0.2px; }
+.rank-name .num-tag {
   background: var(--navy);
   color: var(--gold);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 6px;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 1px 5px;
   border-radius: 4px;
-  flex-shrink: 0;
+  margin-right: 5px;
+  vertical-align: middle;
+  letter-spacing: 0;
 }
-.rank-name { font-weight: 700; font-size: 15.5px; }
 .rank-stats {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--text-soft);
   margin-top: 3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 600;
 }
-.rank-stats b { color: var(--text); font-weight: 700; }
+.rank-stats b { color: var(--navy); font-weight: 800; }
 .rank-score {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 900;
   color: var(--navy);
   letter-spacing: -1px;
@@ -434,54 +587,63 @@ input { font-family: inherit; }
   flex-shrink: 0;
 }
 .rank-score.negative { color: var(--danger); }
+.rank-score.zero { color: var(--text-mute); }
 
-/* SEASON VIEW */
+/* ============== SEASON ============== */
 .season-card {
   background: var(--card);
   border-radius: 16px;
-  padding: 14px 16px;
+  padding: 14px 14px;
   margin-bottom: 10px;
   box-shadow: var(--shadow);
   border: 1px solid var(--line-soft);
 }
 .season-head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
   gap: 10px;
+  margin-bottom: 10px;
 }
+.season-head .avatar { width: 38px; height: 38px; font-size: 15px; }
+.season-head .player-meta { flex: 1; min-width: 0; }
+.season-head .player-score { font-size: 24px; }
 .season-stats {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
 }
-.season-stat { text-align: center; padding: 6px 2px; background: var(--card-alt); border-radius: 7px; }
+.season-stat {
+  text-align: center;
+  padding: 6px 1px;
+  background: var(--card-alt);
+  border-radius: 7px;
+}
 .season-stat .v {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 17px;
+  font-weight: 900;
   color: var(--navy);
   letter-spacing: -0.5px;
   font-variant-numeric: tabular-nums;
 }
 .season-stat .l {
   color: var(--text-soft);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 9.5px;
+  font-weight: 700;
   margin-top: 1px;
+  letter-spacing: -0.2px;
 }
 
-/* EMPTY STATE */
+/* ============== EMPTY ============== */
 .empty {
   text-align: center;
   padding: 80px 20px 40px;
   color: var(--text-soft);
 }
-.empty .big { font-size: 56px; margin-bottom: 14px; opacity: 0.4; }
-.empty .msg { font-size: 16px; font-weight: 600; color: var(--text); }
+.empty .big { font-size: 60px; margin-bottom: 14px; opacity: 0.35; }
+.empty .msg { font-size: 16px; font-weight: 700; color: var(--text); }
 .empty .sub { font-size: 13px; margin-top: 6px; opacity: 0.7; }
 
-/* MODAL */
+/* ============== MODAL ============== */
 .modal-bg {
   position: fixed;
   inset: 0;
@@ -491,7 +653,6 @@ input { font-family: inherit; }
   justify-content: center;
   z-index: 100;
   animation: fadeIn 0.18s ease-out;
-  padding: 0;
 }
 @media (min-width: 600px) {
   .modal-bg { align-items: center; padding: 20px; }
@@ -503,35 +664,27 @@ input { font-family: inherit; }
   max-width: 480px;
   border-radius: 24px 24px 0 0;
   padding: 24px 20px calc(20px + env(safe-area-inset-bottom));
-  animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
   max-height: 85vh;
   overflow-y: auto;
 }
-@media (min-width: 600px) {
-  .modal { border-radius: 20px; max-height: 80vh; }
-}
+@media (min-width: 600px) { .modal { border-radius: 20px; max-height: 80vh; } }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-.modal h2 {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 18px;
-  color: var(--navy);
-}
+.modal h2 { font-size: 18px; font-weight: 800; margin-bottom: 18px; color: var(--navy); }
 .modal-row { margin-bottom: 12px; }
 .modal-row label {
   display: block;
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--text-soft);
   margin-bottom: 5px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
 }
 .modal input[type="text"], .modal input[type="number"], .modal input[type="date"] {
   width: 100%;
   padding: 13px 14px;
   border: 1.5px solid var(--line);
-  border-radius: 11px;
+  border-radius: 12px;
   font-size: 15px;
   background: var(--card-alt);
   color: var(--text);
@@ -541,142 +694,157 @@ input { font-family: inherit; }
   border-color: var(--sky);
   background: var(--card);
 }
-
-.modal-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 22px;
-}
-.btn {
-  flex: 1;
-  padding: 13px;
-  border-radius: 11px;
-  font-size: 15px;
-  font-weight: 700;
-  transition: opacity 0.1s;
-}
+.modal-actions { display: flex; gap: 8px; margin-top: 22px; }
+.btn { flex: 1; padding: 13px; border-radius: 12px; font-size: 15px; font-weight: 700; transition: opacity 0.1s; }
 .btn:active { opacity: 0.75; }
 .btn-primary { background: var(--navy); color: white; }
 .btn-ghost { background: var(--bg); color: var(--text); }
 .btn-danger { background: var(--danger); color: white; }
 
-/* GAME LIST */
-.game-list {
-  max-height: 50vh;
-  overflow-y: auto;
-  border: 1px solid var(--line-soft);
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-.game-row {
-  display: flex;
-  align-items: center;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--line-soft);
-  gap: 8px;
-}
+/* Game list */
+.game-list { max-height: 50vh; overflow-y: auto; border: 1px solid var(--line-soft); border-radius: 12px; margin-bottom: 14px; }
+.game-row { display: flex; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line-soft); gap: 8px; }
 .game-row:last-child { border-bottom: none; }
-.game-row.active { background: linear-gradient(90deg, #FDF6E0 0%, transparent 100%); }
+.game-row.active { background: linear-gradient(90deg, var(--gold-pale) 0%, transparent 100%); }
 .game-row-info { flex: 1; min-width: 0; cursor: pointer; }
-.game-row-info .nm { font-weight: 700; font-size: 14px; }
-.game-row-info .dt { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
-.game-row-info .badge {
-  display: inline-block;
-  background: var(--gold);
-  color: var(--navy);
-  font-size: 10px;
-  font-weight: 800;
-  padding: 1px 6px;
-  border-radius: 4px;
-  margin-left: 6px;
-  vertical-align: middle;
-}
+.game-row-info .nm { font-weight: 800; font-size: 14px; letter-spacing: -0.2px; }
+.game-row-info .dt { font-size: 12px; color: var(--text-soft); margin-top: 2px; font-weight: 600; }
+.game-row-info .badge { display: inline-block; background: var(--gold); color: var(--navy); font-size: 9.5px; font-weight: 800; padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; letter-spacing: 0.3px; }
+.foot-btn { font-size: 12px; color: var(--text-soft); padding: 6px 10px; border-radius: 6px; font-weight: 700; }
+.foot-btn:active { background: var(--bg); }
+.foot-btn.danger { color: var(--danger); }
 
-/* MENU */
-.menu-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.menu-item {
-  display: flex;
-  align-items: center;
-  padding: 14px 12px;
-  border-radius: 11px;
-  font-size: 14.5px;
-  font-weight: 600;
-  background: var(--card-alt);
-  text-align: left;
-  width: 100%;
-  gap: 12px;
-}
+/* Menu */
+.menu-list { display: flex; flex-direction: column; gap: 4px; }
+.menu-item { display: flex; align-items: center; padding: 14px 12px; border-radius: 12px; font-size: 14.5px; font-weight: 700; background: var(--card-alt); text-align: left; width: 100%; gap: 12px; }
 .menu-item:active { background: var(--line-soft); }
 .menu-item .ic { font-size: 20px; width: 24px; text-align: center; }
 .menu-item.danger { color: var(--danger); }
 
-/* FORMULA HELP */
-.formula-box {
-  background: var(--card-alt);
-  border-left: 3px solid var(--gold);
-  padding: 12px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--text);
-}
-.formula-box .eq {
-  font-family: var(--num-font);
-  font-weight: 700;
-  margin: 8px 0;
-  padding: 8px 10px;
-  background: white;
-  border-radius: 6px;
-  font-size: 12.5px;
-}
+/* Formula */
+.formula-box { background: var(--card-alt); border-left: 3px solid var(--gold); padding: 12px 14px; border-radius: 8px; font-size: 13px; line-height: 1.7; color: var(--text); }
+.formula-box .eq { font-family: var(--num-font); font-weight: 800; margin: 8px 0; padding: 9px 11px; background: white; border-radius: 8px; font-size: 12.5px; letter-spacing: -0.2px; }
 
-/* TOAST */
-.toast {
-  position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--navy);
-  color: white;
-  padding: 10px 18px;
-  border-radius: 22px;
-  font-size: 13.5px;
-  font-weight: 600;
-  z-index: 200;
-  animation: toastIn 0.22s, toastOut 0.3s 1.8s forwards;
-  box-shadow: var(--shadow-lg);
-  pointer-events: none;
+/* Photo edit (player modal) */
+.photo-edit-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: var(--card-alt);
+  border-radius: 14px;
+  margin-bottom: 16px;
 }
+.photo-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--preview-bg, var(--sky));
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  box-shadow: inset 0 -3px 6px rgba(0,0,0,0.12);
+}
+.photo-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.photo-actions { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.photo-btn {
+  display: flex; align-items: center; justify-content: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+.photo-btn.primary { background: var(--navy); color: var(--gold); }
+.photo-btn.ghost { background: var(--card); color: var(--text-soft); border: 1px solid var(--line); }
+.photo-btn input[type="file"] { display: none; }
+
+/* Share options modal */
+.share-options { display: flex; flex-direction: column; gap: 8px; }
+.share-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--card-alt);
+  width: 100%;
+  text-align: left;
+  border: 1.5px solid transparent;
+  transition: all 0.1s;
+}
+.share-option:active { background: var(--line-soft); border-color: var(--sky); }
+.share-option .ic {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--so-bg, var(--navy));
+  color: var(--so-fg, var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.share-option .txt { flex: 1; min-width: 0; }
+.share-option .ti { font-weight: 800; font-size: 14.5px; color: var(--text); }
+.share-option .ds { font-size: 12px; color: var(--text-soft); margin-top: 2px; font-weight: 600; }
+.share-option:disabled { opacity: 0.4; }
+
+/* Toast */
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: var(--navy); color: white; padding: 11px 18px; border-radius: 22px; font-size: 13.5px; font-weight: 700; z-index: 200; animation: toastIn 0.22s, toastOut 0.3s 1.8s forwards; box-shadow: var(--shadow-lg); pointer-events: none; }
 @keyframes toastIn { from { transform: translate(-50%, 20px); opacity: 0; } }
 @keyframes toastOut { to { transform: translate(-50%, 20px); opacity: 0; } }
+
+/* Install prompt banner */
+.install-banner {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
+  color: white;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+}
+.install-banner .ic { font-size: 22px; flex-shrink: 0; }
+.install-banner .txt { flex: 1; font-size: 12.5px; font-weight: 600; line-height: 1.4; }
+.install-banner .txt b { color: var(--gold); font-weight: 800; }
+.install-banner button { background: var(--gold); color: var(--navy); padding: 7px 12px; border-radius: 8px; font-weight: 800; font-size: 12px; }
+.install-banner .close { background: transparent; color: var(--sky-soft); padding: 0; font-size: 16px; width: 24px; }
 
 </style>
 </head>
 <body>
 <div class="app">
+
   <div class="header">
     <div class="header-top">
       <div class="brand">
-        <span class="ball">⚾</span>
-        <span class="gold-text">BASEBALL</span>
-        <span class="sub">RECORD</span>
+        <span class="brand-ball">⚾</span>
+        <span class="brand-main">BASEBALL</span>
+        <span class="brand-sub">RECORD</span>
       </div>
       <div class="head-actions">
         <button class="icon-btn" onclick="shareScorecard()" aria-label="공유">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
         </button>
         <button class="icon-btn" onclick="openMenu()" aria-label="메뉴">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
     </div>
     <div class="game-bar">
       <button class="game-info" onclick="openGameList()">
-        <div style="flex:1;min-width:0">
+        <div class="game-info-text">
           <div class="label">현재 경기</div>
           <div class="name" id="currentGameName">-</div>
         </div>
@@ -684,9 +852,9 @@ input { font-family: inherit; }
       </button>
     </div>
     <div class="tabs" id="tabs">
-      <button class="tab active" data-view="game">이번 경기</button>
-      <button class="tab" data-view="season">시즌 누적</button>
-      <button class="tab" data-view="rank">순위</button>
+      <button class="tab active" data-view="game">⚾ 기록</button>
+      <button class="tab" data-view="rank">🏆 점수판</button>
+      <button class="tab" data-view="season">📅 시즌</button>
     </div>
   </div>
 
@@ -694,26 +862,39 @@ input { font-family: inherit; }
 </div>
 
 <button class="add-fab" onclick="addPlayer()" aria-label="선수 추가">＋</button>
-
 <canvas id="cardCanvas" style="display:none"></canvas>
 
 <script>
-// ============================================================
-//  STATE
-// ============================================================
-const STORAGE_KEY = 'baseball-record-v1';
-const STAT_KEYS = ['atBats', 'hits', 'walks', 'ks', 'errors', 'baserunOuts'];
-const STAT_LABELS = { atBats: '타석', hits: '안타', walks: '볼넷', ks: '삼진', errors: '실책', baserunOuts: '주루사' };
+// ====================================================================
+//  STATE & CONSTANTS
+// ====================================================================
+const STORAGE_KEY = 'baseball-record-v2';
+const STAT_KEYS = ['hits', 'walks', 'steals', 'ks', 'errors', 'baserunOuts'];
+const STAT_INFO = {
+  hits:         { label: '안타',   pts: '+3',    group: 'pos', bumpsPA: true },
+  walks:        { label: '볼넷',   pts: '+1',    group: 'pos', bumpsPA: true },
+  steals:       { label: '도루',   pts: '+0.5',  group: 'pos', bumpsPA: false },
+  ks:           { label: '삼진',   pts: '-3',    group: 'neg', bumpsPA: true },
+  errors:       { label: '실책',   pts: '-2',    group: 'neg', bumpsPA: false },
+  baserunOuts:  { label: '주루사', pts: '-3',    group: 'neg', bumpsPA: false },
+};
+
+// Avatar palette - cycle through visually distinct colors for each player
+const AVATAR_COLORS = [
+  '#4A9FE0', '#2D9C7F', '#E0884A', '#9B59B6', '#E74C3C',
+  '#2980B9', '#16A085', '#F39C12', '#8E44AD', '#C0392B',
+  '#3498DB', '#27AE60', '#D35400', '#7D3C98', '#A93226',
+];
 
 let state = loadState();
 let currentView = 'game';
-let rankBasis = 'game'; // 'game' or 'season'
+let rankBasis = 'game';
+let installPromptEvent = null;
 
 function loadState() {
   try {
     const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (s && Array.isArray(s.players) && Array.isArray(s.games) && s.games.length) {
-      // Defensive: ensure stats container
       s.games.forEach(g => { if (!g.stats) g.stats = {}; });
       if (!s.currentGameId || !s.games.find(g => g.id === s.currentGameId)) {
         s.currentGameId = s.games[0].id;
@@ -741,132 +922,209 @@ function saveState() {
 function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
 function today() { return new Date().toISOString().slice(0, 10); }
 
-function currentGame() {
-  return state.games.find(g => g.id === state.currentGameId) || state.games[0];
-}
+function currentGame() { return state.games.find(g => g.id === state.currentGameId) || state.games[0]; }
 
+function emptyStats() {
+  return { atBats: 0, hits: 0, walks: 0, steals: 0, ks: 0, errors: 0, baserunOuts: 0 };
+}
 function ensureStats(game, playerId) {
-  if (!game.stats[playerId]) {
-    game.stats[playerId] = { atBats: 0, hits: 0, walks: 0, ks: 0, errors: 0, baserunOuts: 0 };
-  }
-  return game.stats[playerId];
+  if (!game.stats[playerId]) game.stats[playerId] = emptyStats();
+  // Defensive: ensure all keys exist (old data from v1)
+  const s = game.stats[playerId];
+  ['atBats','hits','walks','steals','ks','errors','baserunOuts'].forEach(k => { if (s[k] == null) s[k] = 0; });
+  return s;
 }
-
 function getStats(game, playerId) {
-  return game.stats[playerId] || { atBats: 0, hits: 0, walks: 0, ks: 0, errors: 0, baserunOuts: 0 };
+  const s = game.stats[playerId];
+  if (!s) return emptyStats();
+  return Object.assign(emptyStats(), s);
 }
 
 function aggregateSeasonStats(playerId) {
-  const total = { atBats: 0, hits: 0, walks: 0, ks: 0, errors: 0, baserunOuts: 0 };
+  const total = emptyStats();
   for (const g of state.games) {
     const s = getStats(g, playerId);
-    for (const k of STAT_KEYS) total[k] += (s[k] || 0);
+    Object.keys(total).forEach(k => total[k] += (s[k] || 0));
   }
   return total;
 }
 
-function calcScore(s) {
-  const defensive = (s.errors || 0) * -2 + (s.baserunOuts || 0) * -3;
-  if (!s.atBats) return defensive; // PA=0 → only defensive penalty applies
-  const offensive = ((s.hits || 0) * 3 + (s.walks || 0) * 1 + (s.ks || 0) * -3) / s.atBats;
-  return offensive + defensive;
+// 범타아웃 = 타석 − (안타 + 볼넷 + 삼진), clamped >= 0
+function groundFlyOuts(s) {
+  return Math.max(0, (s.atBats || 0) - (s.hits || 0) - (s.walks || 0) - (s.ks || 0));
 }
 
-// ============================================================
+function calcScore(s) {
+  const gfo = groundFlyOuts(s);
+  const ab = s.atBats || 0;
+  const battingPts = (s.hits || 0) * 3 + (s.walks || 0) * 1 + (s.ks || 0) * -3 + gfo * -1;
+  const battingAvg = ab > 0 ? battingPts / ab : 0;
+  const extras = (s.steals || 0) * 0.5 + (s.errors || 0) * -2 + (s.baserunOuts || 0) * -3;
+  return battingAvg + extras;
+}
+
+function avatarColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) | 0;
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+
+function firstChar(name) { return (name || '?').trim().charAt(0) || '?'; }
+
+// ====================================================================
+//  PHOTO HANDLING
+// ====================================================================
+/**
+ * Accept a File, square-crop center, resize to 640px, return data URL (jpeg).
+ * Typical output: 30-200 KB depending on photo complexity.
+ */
+async function compressPhoto(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const MAX = 640;
+          const side = Math.min(img.width, img.height);
+          const sx = (img.width - side) / 2;
+          const sy = (img.height - side) / 2;
+          const canvas = document.createElement('canvas');
+          canvas.width = MAX;
+          canvas.height = MAX;
+          const ctx = canvas.getContext('2d');
+          // White background under transparent images
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, MAX, MAX);
+          ctx.drawImage(img, sx, sy, side, side, 0, 0, MAX, MAX);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        } catch (err) { reject(err); }
+      };
+      img.onerror = () => reject(new Error('이미지를 읽을 수 없습니다'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('파일을 읽을 수 없습니다'));
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * Load a data URL into an Image element (for canvas drawing).
+ */
+function loadImg(src) {
+  return new Promise((resolve, reject) => {
+    if (!src) { resolve(null); return; }
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null); // gracefully fall through
+    img.src = src;
+  });
+}
+
+function checkStorageSize() {
+  try {
+    const kb = Math.round(new Blob([JSON.stringify(state)]).size / 1024);
+    if (kb > 4500) toast(`⚠️ 저장 ${kb}KB - 옛 경기 정리 필요`);
+    return kb;
+  } catch (e) { return 0; }
+}
+
+// ====================================================================
 //  RENDER
-// ============================================================
+// ====================================================================
 function render() {
   const game = currentGame();
-  document.getElementById('currentGameName').textContent =
-    `${game.name}  ·  ${formatDate(game.date)}`;
-
-  document.querySelectorAll('.tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.view === currentView);
-  });
+  document.getElementById('currentGameName').textContent = `${game.name}  ·  ${formatDate(game.date)}`;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === currentView));
 
   const content = document.getElementById('content');
 
   if (state.players.length === 0) {
-    content.innerHTML = `
-      <div class="empty">
-        <div class="big">⚾</div>
-        <div class="msg">선수를 추가해주세요</div>
-        <div class="sub">오른쪽 아래 ＋ 버튼을 눌러 시작</div>
-      </div>`;
+    content.innerHTML = emptyHTML();
     return;
   }
 
-  if (currentView === 'game') {
-    content.innerHTML = state.players.map(p => playerCardHTML(p, game)).join('');
-  } else if (currentView === 'season') {
-    content.innerHTML = state.players.map(p => seasonCardHTML(p)).join('');
-  } else if (currentView === 'rank') {
-    content.innerHTML = rankViewHTML();
-  }
+  if (currentView === 'game') content.innerHTML = gameViewHTML();
+  else if (currentView === 'rank') content.innerHTML = rankViewHTML();
+  else if (currentView === 'season') content.innerHTML = seasonViewHTML();
+}
+
+function emptyHTML() {
+  return `
+    <div class="empty">
+      <div class="big">⚾</div>
+      <div class="msg">선수를 추가해주세요</div>
+      <div class="sub">오른쪽 아래 ＋ 버튼으로 시작</div>
+    </div>`;
+}
+
+function gameViewHTML() {
+  const game = currentGame();
+  return state.players.map(p => playerCardHTML(p, game)).join('');
 }
 
 function playerCardHTML(player, game) {
   const stats = ensureStats(game, player.id);
   const score = calcScore(stats);
-  const scoreClass = score < 0 ? 'negative' : '';
-  const numHtml = player.number != null
-    ? `<div class="player-num">${escapeHtml(String(player.number))}</div>`
-    : `<div class="player-num no-num">선수</div>`;
+  const scoreClass = score < 0 ? 'negative' : (score === 0 ? 'zero' : '');
+  const gfo = groundFlyOuts(stats);
+  const color = avatarColor(player.name);
+  const ch = firstChar(player.name);
+  const numBadge = player.number != null
+    ? `<span class="num-badge">${escapeHtml(String(player.number))}</span>` : '';
+  const avatarInner = player.photo
+    ? `<img src="${escapeAttr(player.photo)}" alt="">${numBadge}`
+    : `${escapeHtml(ch)}${numBadge}`;
+
   return `
-    <div class="player-card">
+    <div class="player-card has-score" style="--accent:${color};--avatar-bg:${color}">
+      <button class="player-close" onclick="deletePlayer('${player.id}')" aria-label="삭제">✕</button>
       <div class="player-head">
-        <div class="player-id">
-          ${numHtml}
-          <div class="player-name">${escapeHtml(player.name)}</div>
+        <div class="avatar" onclick="editPlayer('${player.id}')">${avatarInner}</div>
+        <div class="player-meta">
+          <div class="player-name" onclick="editPlayer('${player.id}')">${escapeHtml(player.name)}</div>
+          <div class="player-sub">타석 <b>${stats.atBats}</b> · 범타 <b>${gfo}</b></div>
         </div>
         <div class="player-score ${scoreClass}">${fmtScore(score)}</div>
       </div>
-      <div class="stats-grid">
-        ${STAT_KEYS.map(k => statCellHTML(player.id, k, stats[k])).join('')}
+
+      <div class="stat-group">
+        <div class="stat-group-label"><span class="dot" style="background:var(--green)"></span>가산</div>
+        <div class="stats-grid">
+          ${['hits','walks','steals'].map(k => statCellHTML(player.id, k, stats[k])).join('')}
+        </div>
       </div>
-      <div class="player-foot">
-        <button class="foot-btn" onclick="editPlayer('${player.id}')">편집</button>
-        <button class="foot-btn danger" onclick="deletePlayer('${player.id}')">삭제</button>
+
+      <div class="stat-group">
+        <div class="stat-group-label"><span class="dot" style="background:var(--danger)"></span>감점</div>
+        <div class="stats-grid">
+          ${['ks','errors','baserunOuts'].map(k => statCellHTML(player.id, k, stats[k])).join('')}
+        </div>
+      </div>
+
+      <div class="pa-row">
+        <div class="pa-info">
+          <div class="pa-label">타석 (TPA)</div>
+          <div class="pa-detail">범타아웃 자동 <b>${gfo}</b>개 (−${gfo}점)</div>
+        </div>
+        <div class="pa-controls">
+          <button class="stat-btn minus" onclick="bumpPA('${player.id}',-1)" aria-label="타석 감소">−</button>
+          <div class="stat-value">${stats.atBats}</div>
+          <button class="stat-btn plus" onclick="bumpPA('${player.id}',1)" aria-label="범타아웃">＋</button>
+        </div>
       </div>
     </div>`;
 }
 
 function statCellHTML(playerId, key, value) {
-  const highlightClass = key === 'atBats' ? 'highlight-pa' : '';
+  const info = STAT_INFO[key];
   return `
-    <div class="stat-cell ${highlightClass}">
-      <div class="stat-label">${STAT_LABELS[key]}</div>
+    <div class="stat-cell ${info.group === 'pos' ? 'pos' : 'neg'}">
+      <div class="stat-label">${info.label}<span class="pts">${info.pts}</span></div>
       <div class="stat-controls">
-        <button class="stat-btn minus" onclick="updateStat('${playerId}','${key}',-1)" aria-label="감소">−</button>
+        <button class="stat-btn minus" onclick="bumpStat('${playerId}','${key}',-1)" aria-label="감소">−</button>
         <div class="stat-value">${value}</div>
-        <button class="stat-btn plus" onclick="updateStat('${playerId}','${key}',1)" aria-label="증가">＋</button>
-      </div>
-    </div>`;
-}
-
-function seasonCardHTML(player) {
-  const stats = aggregateSeasonStats(player.id);
-  const score = calcScore(stats);
-  const scoreClass = score < 0 ? 'negative' : '';
-  const numHtml = player.number != null
-    ? `<div class="player-num" style="width:30px;height:30px;font-size:13px">${escapeHtml(String(player.number))}</div>`
-    : `<div class="player-num no-num" style="width:30px;height:30px;font-size:11px">선수</div>`;
-  return `
-    <div class="season-card">
-      <div class="season-head">
-        <div class="player-id">
-          ${numHtml}
-          <div class="player-name">${escapeHtml(player.name)}</div>
-        </div>
-        <div class="player-score ${scoreClass}" style="font-size:24px">${fmtScore(score)}</div>
-      </div>
-      <div class="season-stats">
-        ${STAT_KEYS.map(k => `
-          <div class="season-stat">
-            <div class="v">${stats[k]}</div>
-            <div class="l">${STAT_LABELS[k]}</div>
-          </div>
-        `).join('')}
+        <button class="stat-btn plus" onclick="bumpStat('${playerId}','${key}',1)" aria-label="증가">＋</button>
       </div>
     </div>`;
 }
@@ -875,101 +1133,233 @@ function rankViewHTML() {
   const game = currentGame();
   const ranked = state.players.map(p => {
     const stats = rankBasis === 'game' ? getStats(game, p.id) : aggregateSeasonStats(p.id);
-    return { player: p, stats, score: calcScore(stats) };
+    return { player: p, stats, score: calcScore(stats), gfo: groundFlyOuts(stats) };
   }).sort((a, b) => b.score - a.score);
 
   return `
+    <div class="share-bar">
+      <div class="info">
+        <div class="t">${rankBasis === 'game' ? '이번 경기 점수판' : '시즌 누적 점수판'}</div>
+        <div class="s">카카오톡으로 스코어카드 이미지 공유</div>
+      </div>
+      <button class="share-btn" onclick="shareScorecard()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        공유
+      </button>
+    </div>
     <div class="sub-toggle">
       <button class="${rankBasis === 'game' ? 'active' : ''}" onclick="setRankBasis('game')">이번 경기 기준</button>
       <button class="${rankBasis === 'season' ? 'active' : ''}" onclick="setRankBasis('season')">시즌 누적 기준</button>
     </div>
     <div class="rank-list">
-      ${ranked.map((r, i) => {
-        const cls = i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
-        const numBadge = r.player.number != null
-          ? `<span class="rank-num-badge">#${escapeHtml(String(r.player.number))}</span>`
-          : '';
-        return `
-          <div class="rank-row ${cls}">
-            <div class="rank-num">${i + 1}</div>
-            <div class="rank-info">
-              <div class="rank-name-row">
-                ${numBadge}
-                <div class="rank-name">${escapeHtml(r.player.name)}</div>
-              </div>
-              <div class="rank-stats">
-                타석 <b>${r.stats.atBats}</b> · 안타 <b>${r.stats.hits}</b> · 볼넷 <b>${r.stats.walks}</b> · 삼진 <b>${r.stats.ks}</b> · 실책 <b>${r.stats.errors}</b> · 주루사 <b>${r.stats.baserunOuts}</b>
-              </div>
-            </div>
-            <div class="rank-score ${r.score < 0 ? 'negative' : ''}">${fmtScore(r.score)}</div>
-          </div>`;
-      }).join('')}
+      ${ranked.map((r, i) => rankRowHTML(r, i)).join('')}
     </div>`;
 }
 
-// ============================================================
-//  EVENTS
-// ============================================================
-function updateStat(playerId, key, delta) {
-  const game = currentGame();
-  const stats = ensureStats(game, playerId);
-  const next = Math.max(0, (stats[key] || 0) + delta);
-  if (next === stats[key]) return;
-  stats[key] = next;
-  saveState();
-  render();
-  if (navigator.vibrate) navigator.vibrate(8);
+function rankRowHTML(r, i) {
+  const cls = i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
+  const scoreClass = r.score < 0 ? 'negative' : (r.score === 0 ? 'zero' : '');
+  const numTag = r.player.number != null ? `<span class="num-tag">#${escapeHtml(String(r.player.number))}</span>` : '';
+  const color = avatarColor(r.player.name);
+  const avatarInner = r.player.photo
+    ? `<img src="${escapeAttr(r.player.photo)}" alt="">`
+    : escapeHtml(firstChar(r.player.name));
+  return `
+    <div class="rank-row ${cls}">
+      <div class="rank-num">${i + 1}</div>
+      <div class="rank-avatar avatar" style="--avatar-bg:${color}">${avatarInner}</div>
+      <div class="rank-info">
+        <div class="rank-name">${numTag}${escapeHtml(r.player.name)}</div>
+        <div class="rank-stats">
+          타 <b>${r.stats.atBats}</b> · 안 <b>${r.stats.hits}</b> · 볼 <b>${r.stats.walks}</b> · 도 <b>${r.stats.steals}</b> · 삼 <b>${r.stats.ks}</b> · 실 <b>${r.stats.errors}</b> · 주 <b>${r.stats.baserunOuts}</b>
+        </div>
+      </div>
+      <div class="rank-score ${scoreClass}">${fmtScore(r.score)}</div>
+    </div>`;
 }
 
-function setRankBasis(basis) { rankBasis = basis; render(); }
-function setView(view) { currentView = view; render(); }
+function seasonViewHTML() {
+  return state.players.map(p => seasonCardHTML(p)).join('');
+}
+
+function seasonCardHTML(player) {
+  const stats = aggregateSeasonStats(player.id);
+  const score = calcScore(stats);
+  const scoreClass = score < 0 ? 'negative' : (score === 0 ? 'zero' : '');
+  const gfo = groundFlyOuts(stats);
+  const color = avatarColor(player.name);
+  const numBadge = player.number != null ? `<span class="num-badge">${escapeHtml(String(player.number))}</span>` : '';
+  const avatarInner = player.photo
+    ? `<img src="${escapeAttr(player.photo)}" alt="">${numBadge}`
+    : `${escapeHtml(firstChar(player.name))}${numBadge}`;
+
+  return `
+    <div class="season-card">
+      <div class="season-head">
+        <div class="avatar" style="--avatar-bg:${color}">${avatarInner}</div>
+        <div class="player-meta">
+          <div class="player-name">${escapeHtml(player.name)}</div>
+          <div class="player-sub">전체 경기 <b>${state.games.length}</b>경기</div>
+        </div>
+        <div class="player-score ${scoreClass}">${fmtScore(score)}</div>
+      </div>
+      <div class="season-stats">
+        <div class="season-stat"><div class="v">${stats.atBats}</div><div class="l">타석</div></div>
+        <div class="season-stat"><div class="v">${stats.hits}</div><div class="l">안타</div></div>
+        <div class="season-stat"><div class="v">${stats.walks}</div><div class="l">볼넷</div></div>
+        <div class="season-stat"><div class="v">${stats.steals}</div><div class="l">도루</div></div>
+        <div class="season-stat"><div class="v">${stats.ks}</div><div class="l">삼진</div></div>
+        <div class="season-stat"><div class="v">${stats.errors}</div><div class="l">실책</div></div>
+        <div class="season-stat"><div class="v">${stats.baserunOuts}</div><div class="l">주루사</div></div>
+      </div>
+    </div>`;
+}
+
+// ====================================================================
+//  STAT MUTATION (with auto-PA linking)
+// ====================================================================
+function bumpStat(playerId, key, delta) {
+  const game = currentGame();
+  const stats = ensureStats(game, playerId);
+  const info = STAT_INFO[key];
+  const prev = stats[key];
+  const next = Math.max(0, prev + delta);
+  if (next === prev) return;
+
+  stats[key] = next;
+
+  // Auto-link 타석 for hits/walks/ks (these consume a PA)
+  if (info.bumpsPA) {
+    if (delta > 0) {
+      stats.atBats += 1;
+    } else {
+      // On decrement, also reduce atBats but never go below
+      // the minimum required by remaining bumped stats.
+      const minAB = stats.hits + stats.walks + stats.ks;
+      stats.atBats = Math.max(minAB, stats.atBats - 1);
+    }
+  }
+  saveState();
+  render();
+  haptic();
+}
+
+function bumpPA(playerId, delta) {
+  const game = currentGame();
+  const stats = ensureStats(game, playerId);
+  const minAB = stats.hits + stats.walks + stats.ks;
+  const next = Math.max(minAB, stats.atBats + delta);
+  if (next === stats.atBats) return;
+  stats.atBats = next;
+  saveState();
+  render();
+  haptic();
+}
+
+function haptic() { if (navigator.vibrate) navigator.vibrate(8); }
+
+function setRankBasis(b) { rankBasis = b; render(); }
+function setView(v) { currentView = v; render(); }
 
 document.getElementById('tabs').addEventListener('click', e => {
   const t = e.target.closest('.tab');
   if (t) setView(t.dataset.view);
 });
 
-// ============================================================
+// ====================================================================
 //  PLAYER CRUD
-// ============================================================
-function addPlayer() {
-  openModal({
-    title: '선수 추가',
-    fields: [
-      { name: 'name', label: '이름', type: 'text', required: true, placeholder: '예) 이길봉' },
-      { name: 'number', label: '등번호 (선택)', type: 'number', placeholder: '예) 7' },
-    ],
-    onSubmit(data) {
-      if (!data.name || !data.name.trim()) return false;
-      state.players.push({
-        id: uid(),
-        name: data.name.trim(),
-        number: data.number != null && data.number !== '' ? Number(data.number) : null,
-      });
-      saveState();
-      render();
-      toast('선수가 추가되었습니다');
-    }
-  });
-}
+// ====================================================================
+// State for photo edit modal
+let workingPhoto = null;
 
+function addPlayer() { openPlayerEditModal(null); }
 function editPlayer(id) {
   const p = state.players.find(x => x.id === id);
-  if (!p) return;
-  openModal({
-    title: '선수 편집',
-    fields: [
-      { name: 'name', label: '이름', type: 'text', required: true, value: p.name },
-      { name: 'number', label: '등번호 (선택)', type: 'number', value: p.number ?? '' },
-    ],
-    onSubmit(data) {
-      if (!data.name || !data.name.trim()) return false;
-      p.name = data.name.trim();
-      p.number = data.number != null && data.number !== '' ? Number(data.number) : null;
-      saveState();
-      render();
+  if (p) openPlayerEditModal(p);
+}
+
+function openPlayerEditModal(player) {
+  const isNew = !player;
+  workingPhoto = player ? (player.photo || null) : null;
+  const nameInit = player?.name || '';
+  const numInit = player?.number ?? '';
+
+  function buildHTML() {
+    const previewBg = avatarColor(nameInit || 'A');
+    const inner = workingPhoto
+      ? `<img src="${escapeAttr(workingPhoto)}" alt="">`
+      : `<span>${escapeHtml(firstChar(nameInit || '?'))}</span>`;
+    const removeBtn = workingPhoto
+      ? `<button class="photo-btn ghost" onclick="window.__bbClearPhoto()">사진 제거</button>`
+      : '';
+    return `
+      <h2>${isNew ? '선수 추가' : '선수 편집'}</h2>
+      <div class="photo-edit-section">
+        <div class="photo-preview" style="--preview-bg:${previewBg}">${inner}</div>
+        <div class="photo-actions">
+          <label class="photo-btn primary">
+            <span>📷 ${workingPhoto ? '사진 변경' : '사진 추가'}</span>
+            <input type="file" accept="image/*" id="bb-photo-input">
+          </label>
+          ${removeBtn}
+        </div>
+      </div>
+      <div class="modal-row">
+        <label>이름 *</label>
+        <input type="text" id="bb-pname" value="${escapeAttr(nameInit)}" placeholder="예) 이길봉">
+      </div>
+      <div class="modal-row">
+        <label>등번호 (선택)</label>
+        <input type="number" id="bb-pnumber" value="${escapeAttr(numInit)}" placeholder="예) 7">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal()">취소</button>
+        <button class="btn btn-primary" onclick="window.__bbSavePlayer()">확인</button>
+      </div>`;
+  }
+
+  function rerender() {
+    showModal(buildHTML());
+    document.getElementById('bb-photo-input').addEventListener('change', handlePhotoChange);
+    setTimeout(() => document.getElementById('bb-pname')?.focus(), 50);
+  }
+
+  async function handlePhotoChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { toast('이미지 파일만 가능합니다'); return; }
+    if (file.size > 25 * 1024 * 1024) { toast('25MB 이하 파일만 가능'); return; }
+    toast('사진 처리 중...');
+    try {
+      workingPhoto = await compressPhoto(file);
+      rerender();
+    } catch (err) {
+      toast('사진 처리 실패: ' + err.message);
     }
-  });
+  }
+
+  window.__bbClearPhoto = () => { workingPhoto = null; rerender(); };
+  window.__bbSavePlayer = () => {
+    const name = document.getElementById('bb-pname').value.trim();
+    const numStr = document.getElementById('bb-pnumber').value;
+    const number = numStr !== '' ? Number(numStr) : null;
+    if (!name) { toast('이름을 입력해주세요'); return; }
+
+    if (isNew) {
+      state.players.push({ id: uid(), name, number, photo: workingPhoto });
+      toast('선수가 추가되었습니다');
+    } else {
+      player.name = name;
+      player.number = number;
+      player.photo = workingPhoto;
+    }
+    saveState();
+    checkStorageSize();
+    closeModal();
+    render();
+  };
+
+  rerender();
 }
 
 function deletePlayer(id) {
@@ -983,23 +1373,19 @@ function deletePlayer(id) {
   toast('삭제되었습니다');
 }
 
-// ============================================================
+// ====================================================================
 //  GAME CRUD
-// ============================================================
+// ====================================================================
 function openGameList() {
-  const rows = state.games.map(g => `
+  const rows = state.games.slice().reverse().map(g => `
     <div class="game-row ${g.id === state.currentGameId ? 'active' : ''}">
       <div class="game-row-info" onclick="selectGame('${g.id}')">
-        <div class="nm">
-          ${escapeHtml(g.name)}
-          ${g.id === state.currentGameId ? '<span class="badge">현재</span>' : ''}
-        </div>
+        <div class="nm">${escapeHtml(g.name)}${g.id === state.currentGameId ? '<span class="badge">현재</span>' : ''}</div>
         <div class="dt">${formatDate(g.date)}</div>
       </div>
       <button class="foot-btn" onclick="event.stopPropagation();editGame('${g.id}')">편집</button>
       ${state.games.length > 1 ? `<button class="foot-btn danger" onclick="event.stopPropagation();deleteGame('${g.id}')">삭제</button>` : ''}
-    </div>
-  `).join('');
+    </div>`).join('');
   showModal(`
     <h2>경기 관리</h2>
     <div class="game-list">${rows}</div>
@@ -1069,9 +1455,9 @@ function deleteGame(id) {
   toast('경기가 삭제되었습니다');
 }
 
-// ============================================================
+// ====================================================================
 //  MENU
-// ============================================================
+// ====================================================================
 function openMenu() {
   showModal(`
     <h2>메뉴</h2>
@@ -1083,10 +1469,13 @@ function openMenu() {
         <span class="ic">🧮</span>점수식 보기
       </button>
       <button class="menu-item" onclick="closeModal();exportData()">
-        <span class="ic">💾</span>데이터 백업 (JSON 다운로드)
+        <span class="ic">💾</span>데이터 백업 (JSON)
       </button>
       <button class="menu-item" onclick="closeModal();importData()">
-        <span class="ic">📥</span>데이터 복원 (JSON 업로드)
+        <span class="ic">📥</span>데이터 복원
+      </button>
+      <button class="menu-item" onclick="closeModal();showInstallHelp()">
+        <span class="ic">📲</span>홈 화면에 설치하는 법
       </button>
       <button class="menu-item danger" onclick="resetAll()">
         <span class="ic">🗑️</span>전체 초기화
@@ -1101,13 +1490,33 @@ function showFormula() {
   showModal(`
     <h2>점수 계산식</h2>
     <div class="formula-box">
-      <div><b>타격 부분</b> (타석당 평균)</div>
-      <div class="eq">(안타×3 + 볼넷×1 − 삼진×3) ÷ 타석수</div>
-      <div><b>수비·주루 감점</b></div>
-      <div class="eq">− 실책×2 − 주루사×3</div>
-      <div style="font-size:12px;color:var(--text-soft);margin-top:8px">
-        ※ 타석수가 0일 때는 감점만 적용됩니다.
+      <div><b>타격 평균</b> (타석당)</div>
+      <div class="eq">(안타×3 + 볼넷×1 − 삼진×3 − 범타×1) ÷ 타석</div>
+      <div><b>부가 가산</b></div>
+      <div class="eq">＋ 도루×0.5 − 실책×2 − 주루사×3</div>
+      <div style="font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.6">
+        ※ <b>범타아웃</b>은 자동 계산: 타석 − (안타+볼넷+삼진)<br>
+        ※ 안타·볼넷·삼진 ＋ 누르면 <b>타석도 자동 +1</b><br>
+        ※ 타석 ＋ 버튼은 <b>범타아웃</b> 1개로 처리
       </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeModal()">확인</button>
+    </div>`);
+}
+
+function showInstallHelp() {
+  const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const guide = isiOS
+    ? '1. 사파리 하단 <b>공유 버튼 (↑)</b> 탭<br>2. <b>"홈 화면에 추가"</b> 선택<br>3. 우측 상단 <b>"추가"</b>'
+    : '1. 크롬 우측 상단 <b>⋮ 메뉴</b><br>2. <b>"앱 설치"</b> 또는 <b>"홈 화면에 추가"</b><br>3. 확인';
+  showModal(`
+    <h2>홈 화면에 설치</h2>
+    <div class="formula-box" style="border-left-color:var(--sky)">
+      ${guide}
+    </div>
+    <div style="font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.6">
+      설치하면 진짜 앱처럼 전체화면으로 실행되고,<br>인터넷 없어도 한 번 열면 계속 작동합니다.
     </div>
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="closeModal()">확인</button>
@@ -1147,9 +1556,7 @@ function importData() {
         saveState();
         render();
         toast('복원되었습니다');
-      } catch (err) {
-        alert('파일을 읽을 수 없습니다: ' + err.message);
-      }
+      } catch (err) { alert('파일을 읽을 수 없습니다: ' + err.message); }
     };
     reader.readAsText(file);
   };
@@ -1166,9 +1573,9 @@ function resetAll() {
   toast('초기화되었습니다');
 }
 
-// ============================================================
+// ====================================================================
 //  MODAL
-// ============================================================
+// ====================================================================
 let currentModalSubmit = null;
 
 function showModal(innerHTML) {
@@ -1219,94 +1626,493 @@ function submitModal() {
     data[i.name] = i.type === 'number' ? (i.value !== '' ? Number(i.value) : null) : i.value;
   });
   const result = currentModalSubmit(data);
-  if (result === false) {
-    toast('필수 항목을 입력해주세요');
-    return;
-  }
+  if (result === false) { toast('필수 항목을 입력해주세요'); return; }
   closeModal();
 }
 
-// ============================================================
-//  SHARE - canvas image
-// ============================================================
+// ====================================================================
+//  SHARE — open options menu, then dispatch to generators
+// ====================================================================
 async function shareScorecard() {
-  if (state.players.length === 0) {
-    toast('선수를 먼저 추가해주세요');
+  if (state.players.length === 0) { toast('선수를 먼저 추가해주세요'); return; }
+  openShareOptions();
+}
+
+function openShareOptions() {
+  const game = currentGame();
+  const useGameBasis = currentView === 'season' ? false : true;
+  const ranked = state.players.map(p => {
+    const stats = useGameBasis ? getStats(game, p.id) : aggregateSeasonStats(p.id);
+    return { player: p, stats, score: calcScore(stats), gfo: groundFlyOuts(stats) };
+  }).sort((a, b) => b.score - a.score);
+
+  const topN = Math.min(3, ranked.length);
+  const top1 = ranked[0];
+
+  showModal(`
+    <h2>공유</h2>
+    <div class="share-options">
+      <button class="share-option" onclick="closeModal();doShare('full',${useGameBasis})">
+        <div class="ic" style="--so-bg:#0B1B3F;--so-fg:#F2B617">📋</div>
+        <div class="txt">
+          <div class="ti">점수판 전체</div>
+          <div class="ds">전체 선수 순위표 이미지</div>
+        </div>
+      </button>
+      <button class="share-option" onclick="closeModal();doShare('mvp',${useGameBasis})" ${top1 ? '' : 'disabled'}>
+        <div class="ic" style="--so-bg:#F2B617;--so-fg:#0B1B3F">🏆</div>
+        <div class="txt">
+          <div class="ti">MVP 카드 (1위)</div>
+          <div class="ds">${top1 ? `${escapeHtml(top1.player.name)} · ${fmtScore(top1.score)}점` : '선수 데이터 없음'}</div>
+        </div>
+      </button>
+      <button class="share-option" onclick="closeModal();doShare('podium',${useGameBasis})" ${topN >= 1 ? '' : 'disabled'}>
+        <div class="ic" style="--so-bg:linear-gradient(135deg,#F2B617,#C8854A);--so-fg:#FFFFFF">🏅</div>
+        <div class="txt">
+          <div class="ti">시상대 카드 (Top ${topN})</div>
+          <div class="ds">${topN}명 한 장에 합친 시상대 이미지</div>
+        </div>
+      </button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">닫기</button>
+    </div>`);
+}
+
+async function doShare(kind, useGameBasis) {
+  await document.fonts.ready;
+  toast('이미지 생성 중...');
+  let blob;
+  try {
+    if (kind === 'full') blob = await generateScorecardImage(useGameBasis);
+    else if (kind === 'mvp') blob = await generateMVPCard(useGameBasis);
+    else if (kind === 'podium') blob = await generatePodiumCard(useGameBasis);
+  } catch (e) {
+    toast('이미지 생성 실패: ' + e.message);
     return;
   }
-
-  // Choose basis: rank view uses current rankBasis; otherwise use current view's natural basis
-  const useGameBasis = currentView === 'season' ? false : (currentView === 'rank' ? rankBasis === 'game' : true);
-
-  await document.fonts.ready;
-  const blob = await generateScorecardImage(useGameBasis);
   if (!blob) { toast('이미지 생성 실패'); return; }
+  await shareBlob(blob, kind);
+}
 
-  const file = new File([blob], `baseball-${today()}.png`, { type: 'image/png' });
-
+async function shareBlob(blob, kind) {
+  const filename = `baseball-${kind}-${today()}.png`;
+  const file = new File([blob], filename, { type: 'image/png' });
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
-      await navigator.share({ files: [file], title: '⚾ 야구 스코어카드' });
-    } catch (e) {
-      if (e.name !== 'AbortError') { downloadBlob(blob); toast('이미지가 저장되었습니다'); }
-    }
+    try { await navigator.share({ files: [file], title: '⚾ 야구 스코어카드' }); }
+    catch (e) { if (e.name !== 'AbortError') { downloadBlob(blob, filename); toast('이미지가 저장되었습니다'); } }
   } else {
-    downloadBlob(blob);
+    downloadBlob(blob, filename);
     toast('이미지가 저장되었습니다');
   }
 }
 
-function downloadBlob(blob) {
+function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `baseball-${today()}.png`;
+  a.download = filename || `baseball-${today()}.png`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 500);
 }
 
+const FONT = 'Pretendard Variable, Pretendard, -apple-system, sans-serif';
+
+function makeCanvas(w, h) {
+  const c = document.getElementById('cardCanvas');
+  c.width = w; c.height = h;
+  return c.getContext('2d');
+}
+
+// ====================================================================
+//  MVP CARD (single player, trading-card style)
+// ====================================================================
+async function generateMVPCard(useGameBasis) {
+  const game = currentGame();
+  const ranked = state.players.map(p => {
+    const stats = useGameBasis ? getStats(game, p.id) : aggregateSeasonStats(p.id);
+    return { player: p, stats, score: calcScore(stats), gfo: groundFlyOuts(stats) };
+  }).sort((a, b) => b.score - a.score);
+  if (ranked.length === 0) return null;
+
+  const r = ranked[0];
+  const photoImg = r.player.photo ? await loadImg(r.player.photo) : null;
+  const themeColor = avatarColor(r.player.name);
+
+  const W = 1080;
+  const H = 1560;
+  const ctx = makeCanvas(W, H);
+
+  // BG
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, W, H);
+
+  // ===== Photo area (top, full width) =====
+  const photoY = 0;
+  const photoH = 900;
+  // BG color block first
+  const photoGrad = ctx.createLinearGradient(0, 0, 0, photoH);
+  photoGrad.addColorStop(0, themeColor);
+  photoGrad.addColorStop(1, shade(themeColor, -30));
+  ctx.fillStyle = photoGrad;
+  ctx.fillRect(0, photoY, W, photoH);
+
+  if (photoImg) {
+    // Cover-fit photo
+    const ratio = Math.max(W / photoImg.width, photoH / photoImg.height);
+    const drawW = photoImg.width * ratio;
+    const drawH = photoImg.height * ratio;
+    const dx = (W - drawW) / 2;
+    const dy = (photoH - drawH) / 2;
+    ctx.drawImage(photoImg, dx, dy, drawW, drawH);
+  } else {
+    // Giant initial character
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    ctx.font = `900 480px ${FONT}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(firstChar(r.player.name), W / 2, photoH / 2);
+  }
+
+  // Photo bottom gradient overlay (for legibility of overlay text)
+  const overlayGrad = ctx.createLinearGradient(0, photoH - 300, 0, photoH);
+  overlayGrad.addColorStop(0, 'rgba(0,0,0,0)');
+  overlayGrad.addColorStop(1, 'rgba(0,0,0,0.65)');
+  ctx.fillStyle = overlayGrad;
+  ctx.fillRect(0, photoH - 300, W, 300);
+
+  // MVP badge (top-left)
+  ctx.fillStyle = '#F2B617';
+  roundRect(ctx, 40, 40, 320, 80, 12);
+  ctx.fill();
+  ctx.fillStyle = '#0B1B3F';
+  ctx.font = `900 42px ${FONT}`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🏆  MVP', 60, 82);
+
+  // Date + game (top-right)
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.font = `700 28px ${FONT}`;
+  ctx.fillText(truncate(ctx, useGameBasis ? game.name : '시즌 누적', 600), W - 40, 70);
+  ctx.font = `500 22px ${FONT}`;
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.fillText(useGameBasis ? formatDate(game.date) : `~ ${formatDate(today())}`, W - 40, 105);
+
+  // Name + number (over photo bottom)
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  if (r.player.number != null) {
+    const numStr = `#${r.player.number}`;
+    ctx.fillStyle = '#F2B617';
+    ctx.font = `900 36px ${FONT}`;
+    const numW = ctx.measureText(numStr).width + 22;
+    roundRect(ctx, 50, photoH - 165, numW, 50, 8);
+    ctx.fillStyle = '#0B1B3F';
+    ctx.fill();
+    ctx.fillStyle = '#F2B617';
+    ctx.textAlign = 'center';
+    ctx.fillText(numStr, 50 + numW / 2, photoH - 128);
+  }
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = `900 84px ${FONT}`;
+  ctx.fillText(truncate(ctx, r.player.name, W - 100), 50, photoH - 50);
+
+  // Gold divider
+  ctx.fillStyle = '#F2B617';
+  ctx.fillRect(0, photoH, W, 6);
+
+  // ===== Stats band =====
+  const statsY = photoH + 6;
+  const statsH = 300;
+  ctx.fillStyle = '#FAFAF7';
+  ctx.fillRect(0, statsY, W, statsH);
+
+  const labels = ['타석', '안타', '볼넷', '도루', '삼진', '실책', '주루'];
+  const values = [r.stats.atBats, r.stats.hits, r.stats.walks, r.stats.steals, r.stats.ks, r.stats.errors, r.stats.baserunOuts];
+  const negs = [false, false, false, false, true, true, true];
+  const cellW = W / labels.length;
+  labels.forEach((lab, i) => {
+    const cx = i * cellW + cellW / 2;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = negs[i] ? '#A03333' : '#1F7A5C';
+    ctx.font = `700 22px ${FONT}`;
+    ctx.fillText(lab, cx, statsY + 70);
+    ctx.fillStyle = (negs[i] && values[i] > 0) ? '#A03333' : '#1A1F36';
+    ctx.font = `900 64px ${FONT}`;
+    ctx.fillText(String(values[i]), cx, statsY + 165);
+  });
+  // Sub: 범타아웃
+  ctx.fillStyle = '#6B7280';
+  ctx.font = `600 20px ${FONT}`;
+  ctx.fillText(`범타아웃 자동: ${r.gfo}개 (-${r.gfo}점)`, W / 2, statsY + 235);
+
+  // ===== Score band (navy) =====
+  const scoreY = statsY + statsH;
+  const scoreH = 280;
+  ctx.fillStyle = '#0B1B3F';
+  ctx.fillRect(0, scoreY, W, scoreH);
+
+  ctx.fillStyle = '#F2B617';
+  ctx.fillRect(0, scoreY, W, 4);
+
+  ctx.fillStyle = '#C2E0F5';
+  ctx.font = `700 28px ${FONT}`;
+  ctx.textAlign = 'center';
+  ctx.fillText('TOTAL SCORE', W / 2, scoreY + 75);
+
+  ctx.fillStyle = r.score < 0 ? '#FF7A7A' : '#F2B617';
+  ctx.font = `900 180px ${FONT}`;
+  ctx.fillText(fmtScore(r.score), W / 2, scoreY + 220);
+
+  // ===== Footer =====
+  const footY = scoreY + scoreH;
+  ctx.fillStyle = '#050C20';
+  ctx.fillRect(0, footY, W, H - footY);
+  ctx.fillStyle = '#C2E0F5';
+  ctx.font = `500 18px ${FONT}`;
+  ctx.fillText('⚾ BASEBALL RECORD', W / 2, footY + 50);
+
+  return new Promise(r => document.getElementById('cardCanvas').toBlob(r, 'image/png', 0.95));
+}
+
+// ====================================================================
+//  PODIUM CARD (Top 3 stacked)
+// ====================================================================
+async function generatePodiumCard(useGameBasis) {
+  const game = currentGame();
+  const ranked = state.players.map(p => {
+    const stats = useGameBasis ? getStats(game, p.id) : aggregateSeasonStats(p.id);
+    return { player: p, stats, score: calcScore(stats), gfo: groundFlyOuts(stats) };
+  }).sort((a, b) => b.score - a.score).slice(0, 3);
+  if (ranked.length === 0) return null;
+
+  // Preload all photos
+  const photos = await Promise.all(ranked.map(r => r.player.photo ? loadImg(r.player.photo) : Promise.resolve(null)));
+
+  const W = 1080;
+  const headerH = 200;
+  const rowH = 560;
+  const footH = 100;
+  const H = headerH + ranked.length * rowH + footH;
+  const ctx = makeCanvas(W, H);
+
+  // BG
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, W, H);
+
+  // ===== Header =====
+  const headerGrad = ctx.createLinearGradient(0, 0, 0, headerH);
+  headerGrad.addColorStop(0, '#050C20');
+  headerGrad.addColorStop(1, '#0B1B3F');
+  ctx.fillStyle = headerGrad;
+  ctx.fillRect(0, 0, W, headerH);
+
+  ctx.fillStyle = '#F2B617';
+  ctx.fillRect(0, headerH - 5, W, 5);
+
+  ctx.fillStyle = '#F2B617';
+  ctx.font = `900 60px ${FONT}`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('🏅  PODIUM', 50, 90);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = `700 32px ${FONT}`;
+  ctx.fillText(truncate(ctx, useGameBasis ? game.name : '시즌 누적', W - 100), 50, 140);
+  ctx.fillStyle = '#C2E0F5';
+  ctx.font = `500 24px ${FONT}`;
+  ctx.fillText(useGameBasis ? formatDate(game.date) : `~ ${formatDate(today())}`, 50, 175);
+
+  // ===== Rows =====
+  ranked.forEach((r, i) => {
+    const y0 = headerH + i * rowH;
+    drawPodiumRow(ctx, r, i, y0, rowH, W, photos[i]);
+  });
+
+  // ===== Footer =====
+  const footY = headerH + ranked.length * rowH;
+  ctx.fillStyle = '#0B1B3F';
+  ctx.fillRect(0, footY, W, H - footY);
+  ctx.fillStyle = '#F2B617';
+  ctx.fillRect(0, footY, W, 4);
+  ctx.fillStyle = '#C2E0F5';
+  ctx.font = `500 20px ${FONT}`;
+  ctx.textAlign = 'center';
+  ctx.fillText('⚾ BASEBALL RECORD · 점수식: (안타×3+볼넷+도루×0.5−삼진×3−범타) ÷ 타석 − 실책×2 − 주루사×3', W / 2, footY + 60);
+
+  return new Promise(r => document.getElementById('cardCanvas').toBlob(r, 'image/png', 0.95));
+}
+
+function drawPodiumRow(ctx, r, i, y0, rowH, W, photoImg) {
+  // BG (alternating subtle)
+  ctx.fillStyle = i === 0 ? '#FEF6D9' : (i % 2 === 0 ? '#FAFAF7' : '#FFFFFF');
+  ctx.fillRect(0, y0, W, rowH);
+
+  // Left rank stripe
+  const medalColors = [
+    { bg: '#F2B617', text: '#0B1B3F', label: '🥇 1ST', accent: '#C99613' },
+    { bg: '#B8B8B8', text: '#FFFFFF', label: '🥈 2ND', accent: '#888888' },
+    { bg: '#C8854A', text: '#FFFFFF', label: '🥉 3RD', accent: '#8B5A2B' },
+  ][i];
+  ctx.fillStyle = medalColors.accent;
+  ctx.fillRect(0, y0, 12, rowH);
+
+  // Rank badge top-left
+  ctx.fillStyle = medalColors.bg;
+  roundRect(ctx, 40, y0 + 30, 200, 64, 10);
+  ctx.fill();
+  ctx.fillStyle = medalColors.text;
+  ctx.font = `900 32px ${FONT}`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(medalColors.label, 60, y0 + 64);
+
+  // Photo (large square, left side)
+  const photoSize = 340;
+  const photoX = 50;
+  const photoY = y0 + 130;
+  const themeColor = avatarColor(r.player.name);
+
+  // Photo bg fill
+  ctx.fillStyle = themeColor;
+  roundRect(ctx, photoX, photoY, photoSize, photoSize, 24);
+  ctx.fill();
+
+  ctx.save();
+  roundRect(ctx, photoX, photoY, photoSize, photoSize, 24);
+  ctx.clip();
+  if (photoImg) {
+    const ratio = Math.max(photoSize / photoImg.width, photoSize / photoImg.height);
+    const drawW = photoImg.width * ratio;
+    const drawH = photoImg.height * ratio;
+    ctx.drawImage(photoImg, photoX + (photoSize - drawW) / 2, photoY + (photoSize - drawH) / 2, drawW, drawH);
+  } else {
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    ctx.font = `900 200px ${FONT}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(firstChar(r.player.name), photoX + photoSize / 2, photoY + photoSize / 2);
+  }
+  ctx.restore();
+
+  // Photo border
+  ctx.strokeStyle = medalColors.bg;
+  ctx.lineWidth = 5;
+  roundRect(ctx, photoX, photoY, photoSize, photoSize, 24);
+  ctx.stroke();
+
+  // Right side: name + stats + score
+  const rightX = photoX + photoSize + 40;
+
+  // Number badge
+  ctx.textBaseline = 'alphabetic';
+  if (r.player.number != null) {
+    const numStr = `#${r.player.number}`;
+    ctx.fillStyle = '#0B1B3F';
+    ctx.font = `800 28px ${FONT}`;
+    const numW = ctx.measureText(numStr).width + 18;
+    roundRect(ctx, rightX, y0 + 130, numW, 40, 6);
+    ctx.fill();
+    ctx.fillStyle = '#F2B617';
+    ctx.textAlign = 'center';
+    ctx.fillText(numStr, rightX + numW / 2, y0 + 160);
+  }
+
+  // Name
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#0B1B3F';
+  ctx.font = `900 56px ${FONT}`;
+  ctx.fillText(truncate(ctx, r.player.name, W - rightX - 60), rightX, y0 + 230);
+
+  // Stats compact
+  ctx.fillStyle = '#6B7280';
+  ctx.font = `600 22px ${FONT}`;
+  const statsLine = `타 ${r.stats.atBats} · 안 ${r.stats.hits} · 볼 ${r.stats.walks} · 도 ${r.stats.steals} · 삼 ${r.stats.ks}`;
+  ctx.fillText(statsLine, rightX, y0 + 285);
+  const statsLine2 = `실 ${r.stats.errors} · 주 ${r.stats.baserunOuts} · 범타 ${r.gfo}`;
+  ctx.fillText(statsLine2, rightX, y0 + 320);
+
+  // Score
+  ctx.fillStyle = r.score < 0 ? '#DC2626' : '#0B1B3F';
+  ctx.font = `900 110px ${FONT}`;
+  ctx.fillText(fmtScore(r.score), rightX, y0 + 450);
+  ctx.fillStyle = '#6B7280';
+  ctx.font = `700 20px ${FONT}`;
+  ctx.fillText('점수', rightX, y0 + 480);
+}
+
+// Helpers
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function shade(hex, lum) {
+  // Darken/lighten hex color by `lum` percent (-100..100)
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  const num = parseInt(c, 16);
+  let r = (num >> 16) + Math.round(2.55 * lum);
+  let g = ((num >> 8) & 0xFF) + Math.round(2.55 * lum);
+  let b = (num & 0xFF) + Math.round(2.55 * lum);
+  r = Math.min(255, Math.max(0, r));
+  g = Math.min(255, Math.max(0, g));
+  b = Math.min(255, Math.max(0, b));
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+// ====================================================================
+//  FULL SCORECARD (existing) — kept as before
+// ====================================================================
+
 function generateScorecardImage(useGameBasis) {
   const game = currentGame();
   const ranked = state.players.map(p => {
     const stats = useGameBasis ? getStats(game, p.id) : aggregateSeasonStats(p.id);
-    return { player: p, stats, score: calcScore(stats) };
+    return { player: p, stats, score: calcScore(stats), gfo: groundFlyOuts(stats) };
   }).sort((a, b) => b.score - a.score);
 
   const W = 1080;
-  const headerH = 280;
+  const headerH = 300;
   const tableHeaderH = 80;
-  const rowH = 90;
-  const footerH = 130;
+  const rowH = 100;
+  const footerH = 150;
   const H = headerH + tableHeaderH + ranked.length * rowH + footerH;
 
   const canvas = document.getElementById('cardCanvas');
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d');
-
   const FONT = 'Pretendard Variable, Pretendard, -apple-system, sans-serif';
 
-  // Background body (white area for table)
+  // BG (white body)
   ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, W, H);
 
-  // ---- HEADER ----
-  // Dark navy header band with subtle gradient
+  // --- HEADER ---
   const headerGrad = ctx.createLinearGradient(0, 0, 0, headerH);
-  headerGrad.addColorStop(0, '#060F26');
+  headerGrad.addColorStop(0, '#050C20');
   headerGrad.addColorStop(1, '#0B1B3F');
   ctx.fillStyle = headerGrad;
   ctx.fillRect(0, 0, W, headerH);
 
-  // Diagonal accent (decorative)
-  ctx.fillStyle = 'rgba(74, 159, 224, 0.12)';
+  // Decorative diagonal
+  ctx.fillStyle = 'rgba(74, 159, 224, 0.10)';
   ctx.beginPath();
-  ctx.moveTo(W - 300, 0);
+  ctx.moveTo(W - 320, 0);
   ctx.lineTo(W, 0);
   ctx.lineTo(W, headerH);
-  ctx.lineTo(W - 180, headerH);
+  ctx.lineTo(W - 200, headerH);
   ctx.closePath();
   ctx.fill();
 
@@ -1321,46 +2127,42 @@ function generateScorecardImage(useGameBasis) {
   ctx.textBaseline = 'alphabetic';
   ctx.fillText('⚾  BASEBALL', 60, 100);
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = `500 30px ${FONT}`;
-  ctx.fillText('SCORECARD', 410, 100);
+  ctx.font = `500 32px ${FONT}`;
+  ctx.fillText('SCORECARD', 420, 100);
 
-  // Subtitle
+  // Subtitle (game name or season)
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = `700 42px ${FONT}`;
+  ctx.font = `800 44px ${FONT}`;
   const subtitle = useGameBasis ? game.name : '시즌 누적 순위';
-  ctx.fillText(truncate(ctx, subtitle, W - 120), 60, 175);
+  ctx.fillText(truncate(ctx, subtitle, W - 120), 60, 180);
 
   // Date
-  ctx.fillStyle = '#B8DCF5';
+  ctx.fillStyle = '#C2E0F5';
   ctx.font = `500 26px ${FONT}`;
   const dateText = useGameBasis ? formatDate(game.date) : `~ ${formatDate(today())}`;
-  ctx.fillText(dateText, 60, 220);
+  ctx.fillText(dateText, 60, 225);
 
-  // ---- TABLE HEADER ----
+  // --- TABLE HEADER ---
   let y = headerH;
   ctx.fillStyle = '#F8F9FB';
   ctx.fillRect(0, y, W, tableHeaderH);
 
   const cols = [
-    { label: '순위', x: 80,  align: 'center' },
-    { label: '이름', x: 175, align: 'left' },
-    { label: '타석', x: 500, align: 'center' },
-    { label: '안타', x: 580, align: 'center' },
-    { label: '볼넷', x: 660, align: 'center' },
-    { label: '삼진', x: 740, align: 'center' },
-    { label: '실책', x: 820, align: 'center' },
-    { label: '주루사', x: 905, align: 'center' },
-    { label: '점수', x: 1000, align: 'center' },
+    { label: '순위', x: 75,   align: 'center' },
+    { label: '이름', x: 170,  align: 'left' },
+    { label: '타석', x: 490,  align: 'center' },
+    { label: '안타', x: 555,  align: 'center' },
+    { label: '볼넷', x: 620,  align: 'center' },
+    { label: '도루', x: 685,  align: 'center' },
+    { label: '삼진', x: 750,  align: 'center' },
+    { label: '실책', x: 815,  align: 'center' },
+    { label: '주루', x: 880,  align: 'center' },
+    { label: '점수', x: 995,  align: 'center' },
   ];
-
   ctx.fillStyle = '#6B7280';
-  ctx.font = `700 22px ${FONT}`;
-  cols.forEach(c => {
-    ctx.textAlign = c.align;
-    ctx.fillText(c.label, c.x, y + 50);
-  });
+  ctx.font = `700 20px ${FONT}`;
+  cols.forEach(c => { ctx.textAlign = c.align; ctx.fillText(c.label, c.x, y + 50); });
 
-  // Divider
   ctx.strokeStyle = '#0B1B3F';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -1370,95 +2172,92 @@ function generateScorecardImage(useGameBasis) {
 
   y += tableHeaderH;
 
-  // ---- ROWS ----
+  // --- ROWS ---
   ranked.forEach((r, i) => {
     const rowY = y + i * rowH;
-
-    if (i % 2 === 1) {
-      ctx.fillStyle = '#FAFAF7';
-      ctx.fillRect(0, rowY, W, rowH);
-    }
+    if (i % 2 === 1) { ctx.fillStyle = '#FAFAF7'; ctx.fillRect(0, rowY, W, rowH); }
 
     // Rank badge
-    let badgeBg = '#F1F2F4', badgeText = '#6B7280';
-    if (i === 0) { badgeBg = '#F2B617'; badgeText = '#0B1B3F'; }
-    else if (i === 1) { badgeBg = '#B8B8B8'; badgeText = '#FFFFFF'; }
-    else if (i === 2) { badgeBg = '#C8854A'; badgeText = '#FFFFFF'; }
-
-    ctx.fillStyle = badgeBg;
-    ctx.beginPath();
-    ctx.arc(80, rowY + rowH / 2, 28, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = badgeText;
-    ctx.font = `900 26px ${FONT}`;
+    let bg = '#F1F2F4', txt = '#6B7280';
+    if (i === 0) { bg = '#F2B617'; txt = '#0B1B3F'; }
+    else if (i === 1) { bg = '#B8B8B8'; txt = '#FFFFFF'; }
+    else if (i === 2) { bg = '#C8854A'; txt = '#FFFFFF'; }
+    ctx.fillStyle = bg;
+    ctx.beginPath(); ctx.arc(75, rowY + rowH / 2, 26, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = txt;
+    ctx.font = `900 24px ${FONT}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(String(i + 1), 80, rowY + rowH / 2 + 2);
+    ctx.fillText(String(i + 1), 75, rowY + rowH / 2 + 1);
+
+    // Avatar
+    const avBg = avatarColor(r.player.name);
+    ctx.fillStyle = avBg;
+    ctx.beginPath(); ctx.arc(140, rowY + rowH / 2, 22, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = `900 22px ${FONT}`;
+    ctx.fillText(firstChar(r.player.name), 140, rowY + rowH / 2 + 1);
 
     // Name
     ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = '#1A1F36';
-    ctx.font = `700 28px ${FONT}`;
+    ctx.font = `800 26px ${FONT}`;
     ctx.textAlign = 'left';
-    let nameText = r.player.name;
+    let nameX = 170;
     if (r.player.number != null) {
-      // Number badge before name
-      const nameX = 175;
       const numStr = `#${r.player.number}`;
       ctx.fillStyle = '#0B1B3F';
-      ctx.font = `800 18px ${FONT}`;
-      const numW = ctx.measureText(numStr).width + 14;
-      ctx.fillRect(nameX, rowY + rowH / 2 - 16, numW, 26);
+      ctx.font = `800 16px ${FONT}`;
+      const numW = ctx.measureText(numStr).width + 12;
+      ctx.fillRect(nameX, rowY + rowH / 2 - 14, numW, 22);
       ctx.fillStyle = '#F2B617';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(numStr, nameX + numW / 2, rowY + rowH / 2 - 2);
-
       ctx.textBaseline = 'alphabetic';
       ctx.fillStyle = '#1A1F36';
-      ctx.font = `700 28px ${FONT}`;
+      ctx.font = `800 26px ${FONT}`;
       ctx.textAlign = 'left';
-      ctx.fillText(truncate(ctx, nameText, 280), nameX + numW + 10, rowY + rowH / 2 + 9);
+      ctx.fillText(truncate(ctx, r.player.name, 280), nameX + numW + 8, rowY + rowH / 2 + 9);
     } else {
-      ctx.fillText(truncate(ctx, nameText, 310), 175, rowY + rowH / 2 + 9);
+      ctx.fillText(truncate(ctx, r.player.name, 310), nameX, rowY + rowH / 2 + 9);
     }
 
-    // Stats
-    ctx.font = `800 28px ${FONT}`;
-    ctx.fillStyle = '#1A1F36';
+    // Stats (atBats, hits, walks, steals, ks, errors, baserunOuts)
+    const sx = [490, 555, 620, 685, 750, 815, 880];
+    const sk = ['atBats', 'hits', 'walks', 'steals', 'ks', 'errors', 'baserunOuts'];
+    const negative = ['ks', 'errors', 'baserunOuts'];
+    ctx.font = `900 26px ${FONT}`;
     ctx.textAlign = 'center';
-    const sx = [500, 580, 660, 740, 820, 905];
-    const sk = ['atBats', 'hits', 'walks', 'ks', 'errors', 'baserunOuts'];
     sx.forEach((x, idx) => {
       const v = r.stats[sk[idx]];
-      ctx.fillStyle = (sk[idx] === 'ks' || sk[idx] === 'errors' || sk[idx] === 'baserunOuts') && v > 0
-        ? '#9CA3AF' : '#1A1F36';
+      ctx.fillStyle = negative.includes(sk[idx]) && v > 0 ? '#A03333' : '#1A1F36';
       ctx.fillText(String(v), x, rowY + rowH / 2 + 10);
     });
 
     // Score
-    ctx.fillStyle = r.score < 0 ? '#DC2626' : '#0B1B3F';
+    ctx.fillStyle = r.score < 0 ? '#DC2626' : (r.score === 0 ? '#9CA3AF' : '#0B1B3F');
     ctx.font = `900 34px ${FONT}`;
-    ctx.fillText(fmtScore(r.score), 1000, rowY + rowH / 2 + 12);
+    ctx.fillText(fmtScore(r.score), 995, rowY + rowH / 2 + 12);
   });
 
-  // ---- FOOTER ----
+  // --- FOOTER ---
   const footerY = y + ranked.length * rowH;
   ctx.fillStyle = '#0B1B3F';
   ctx.fillRect(0, footerY, W, H - footerY);
 
-  // Gold accent line top
   ctx.fillStyle = '#F2B617';
   ctx.fillRect(0, footerY, W, 4);
 
-  ctx.fillStyle = '#B8DCF5';
-  ctx.font = `600 22px ${FONT}`;
+  ctx.fillStyle = '#C2E0F5';
+  ctx.font = `700 22px ${FONT}`;
   ctx.textAlign = 'center';
   ctx.fillText('점수식', W / 2, footerY + 50);
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = `700 24px ${FONT}`;
-  ctx.fillText('(안타×3 + 볼넷×1 − 삼진×3) ÷ 타석수 − 실책×2 − 주루사×3', W / 2, footerY + 90);
+  ctx.font = `800 22px ${FONT}`;
+  ctx.fillText('(안타×3 + 볼넷×1 − 삼진×3 − 범타×1) ÷ 타석', W / 2, footerY + 90);
+  ctx.fillText('＋ 도루×0.5 − 실책×2 − 주루사×3', W / 2, footerY + 122);
 
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png', 0.95));
 }
@@ -1470,24 +2269,20 @@ function truncate(ctx, text, maxW) {
   return t + '…';
 }
 
-// ============================================================
+// ====================================================================
 //  UTILS
-// ============================================================
+// ====================================================================
 function fmtScore(n) {
   if (!Number.isFinite(n)) return '0.0';
   return n.toFixed(1);
 }
-
 function formatDate(d) {
   if (!d) return '';
   const parts = d.split('-');
   if (parts.length !== 3) return d;
   return `${parts[0]}.${parts[1]}.${parts[2]}`;
 }
-
-function escapeHtml(s) {
-  return String(s).replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
-}
+function escapeHtml(s) { return String(s).replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c])); }
 function escapeAttr(s) { return escapeHtml(s); }
 
 function toast(msg) {
@@ -1500,9 +2295,22 @@ function toast(msg) {
   setTimeout(() => el.remove(), 2200);
 }
 
-// ============================================================
-//  INIT
-// ============================================================
+// ====================================================================
+//  PWA — service worker registration
+// ====================================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed', err));
+  });
+}
+
+// Capture beforeinstallprompt for later (could be used to show custom install button)
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  installPromptEvent = e;
+});
+
+// Initial render
 render();
 </script>
 </body>
