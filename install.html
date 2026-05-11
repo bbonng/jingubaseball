@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1B3F">
+<title>⚾ 야구 기록 앱 설치 안내</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root {
+  --navy: #0B1B3F;
+  --navy-deep: #050C20;
+  --sky: #4A9FE0;
+  --sky-soft: #C2E0F5;
+  --gold: #F2B617;
+  --gold-soft: #FFE08A;
+  --gold-pale: #FEF6D9;
+  --bg: #F6F3EA;
+  --card: #FFFFFF;
+  --card-alt: #FAFAF7;
+  --text: #1A1F36;
+  --text-soft: #6B7280;
+  --line: #E5E7EB;
+  --green: #2D9C7F;
+  --danger: #DC2626;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+body { min-height: 100vh; min-height: 100dvh; }
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-weight: 600;
+  color: inherit;
+  -webkit-appearance: none;
+}
+
+.container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 18px calc(40px + env(safe-area-inset-bottom));
+}
+
+/* ============== HEADER ============== */
+.hero {
+  background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 100%);
+  color: white;
+  margin: 0 -18px 24px;
+  padding: calc(env(safe-area-inset-top) + 36px) 28px 32px;
+  border-radius: 0 0 28px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(74,159,224,0.18), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold) 70%, transparent 100%);
+}
+.hero-icon {
+  width: 80px; height: 80px;
+  background: var(--gold);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  margin-bottom: 18px;
+  box-shadow: 0 10px 24px rgba(242,182,23,0.35);
+}
+.hero h1 {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.hero h1 span { color: var(--gold); }
+.hero p {
+  color: var(--sky-soft);
+  font-size: 14px;
+  font-weight: 500;
+}
+.hero .why {
+  margin-top: 18px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  font-size: 13px;
+  color: white;
+  line-height: 1.55;
+}
+.hero .why b { color: var(--gold); font-weight: 800; }
+
+/* ============== TABS ============== */
+.os-tabs {
+  display: flex;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  margin-bottom: 18px;
+  box-shadow: 0 1px 3px rgba(11,27,63,0.06);
+}
+.os-tab {
+  flex: 1;
+  padding: 12px 0;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-soft);
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.os-tab.active {
+  background: var(--navy);
+  color: white;
+  box-shadow: 0 2px 8px rgba(11,27,63,0.18);
+}
+.os-tab .ic { font-size: 18px; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ============== STEPS ============== */
+.step {
+  background: var(--card);
+  border-radius: 18px;
+  margin-bottom: 14px;
+  padding: 18px;
+  box-shadow: 0 1px 3px rgba(11,27,63,0.06);
+  border: 1px solid var(--line);
+}
+.step-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.step-num {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.step-title {
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.35;
+}
+.step-illustration {
+  background: var(--card-alt);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  position: relative;
+  overflow: hidden;
+}
+.step-illustration svg { max-width: 100%; height: auto; display: block; }
+.step-note {
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+.step-note b { color: var(--text); font-weight: 700; }
+.step-note .warn {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* Safari only warning */
+.safari-warn {
+  background: linear-gradient(135deg, #FEF3F3, #FCE4E4);
+  border: 1.5px solid #F5A8A8;
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #8B1A1A;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.safari-warn .ic { font-size: 22px; flex-shrink: 0; }
+
+/* ============== CTA ============== */
+.cta {
+  display: block;
+  background: var(--navy);
+  color: var(--gold);
+  text-align: center;
+  padding: 18px 20px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  text-decoration: none;
+  margin-top: 24px;
+  box-shadow: 0 8px 24px rgba(11,27,63,0.2);
+  transition: opacity 0.1s;
+}
+.cta:active { opacity: 0.85; }
+.cta .arrow { display: inline-block; transition: transform 0.2s; }
+.cta:hover .arrow { transform: translateX(4px); }
+
+.installed-check {
+  background: var(--gold-pale);
+  border: 1.5px solid var(--gold-soft);
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 24px;
+  text-align: center;
+}
+.installed-check .ic { font-size: 32px; margin-bottom: 8px; }
+.installed-check .ti { font-weight: 800; font-size: 15px; color: var(--navy); }
+.installed-check .ds { font-size: 12.5px; color: var(--text-soft); margin-top: 4px; }
+
+footer {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 12px;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+footer .url {
+  display: inline-block;
+  background: var(--card);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--navy);
+  margin-top: 6px;
+}
+
+/* Pulse anim for SVG highlights */
+@keyframes pulse {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.18); }
+}
+.pulse-target { animation: pulse 1.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-icon">⚾</div>
+    <h1><span>야구 기록 앱</span><br>홈 화면에 설치하기</h1>
+    <p>3분이면 끝나요</p>
+    <div class="why">
+      설치하면 <b>진짜 앱처럼 실행</b>되고,<br>
+      야구장에서 와이파이 없어도 <b>오프라인 작동</b>합니다.
+    </div>
+  </div>
+
+  <div class="os-tabs" role="tablist">
+    <button class="os-tab" data-os="android" role="tab">
+      <span class="ic">🤖</span> 안드로이드
+    </button>
+    <button class="os-tab" data-os="ios" role="tab">
+      <span class="ic">📱</span> 아이폰
+    </button>
+  </div>
+
+  <!-- ============ ANDROID ============ -->
+  <div class="tab-content" id="content-android">
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div class="step-title">크롬(Chrome)으로 페이지 열기</div>
+      </div>
+      <div class="step-illustration">
+        <!-- Chrome window mockup -->
+        <svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="320" height="110" rx="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+          <!-- Tab area -->
+          <rect x="10" y="10" width="320" height="34" rx="14" fill="#F1F2F4"/>
+          <rect x="10" y="30" width="320" height="14" fill="#F1F2F4"/>
+          <!-- Chrome dots -->
+          <circle cx="28" cy="27" r="5" fill="#EA4335"/>
+          <circle cx="44" cy="27" r="5" fill="#FBBC05"/>
+          <circle cx="60" cy="27" r="5" fill="#34A853"/>
+          <!-- URL bar -->
+          <rect x="22" y="56" width="280" height="36" rx="18" fill="#F8F9FB" stroke="#E5E7EB" stroke-width="1"/>
+          <circle cx="42" cy="74" r="6" fill="#0B1B3F"/>
+          <text x="56" y="78" font-family="-apple-system, sans-serif" font-size="11" fill="#6B7280">bbonng.github.io/jingubaseball/</text>
+          <!-- Page content hint -->
+          <circle cx="170" cy="108" r="6" fill="#F2B617"/>
+          <text x="184" y="112" font-family="-apple-system, sans-serif" font-size="9" fill="#9CA3AF">야구 기록</text>
+        </svg>
+      </div>
+      <div class="step-note">
+        평소 쓰시는 <b>크롬</b>으로 페이지 주소를 열어주세요.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div class="step-title">우측 상단 ⋮ 메뉴 버튼 탭</div>
+      </div>
+      <div class="step-illustration">
+        <svg viewBox="0 0 340 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="320" height="110" rx="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+          <!-- URL bar -->
+          <rect x="22" y="34" width="240" height="38" rx="19" fill="#F8F9FB" stroke="#E5E7EB" stroke-width="1"/>
+          <circle cx="42" cy="53" r="6" fill="#0B1B3F"/>
+          <text x="56" y="57" font-family="-apple-system, sans-serif" font-size="11" fill="#6B7280">bbonng.github.io/...</text>
+          <!-- 3-dot menu - pulsing target -->
+          <circle cx="295" cy="53" r="26" fill="#F2B617" opacity="0.35" class="pulse-target"/>
+          <circle cx="295" cy="42" r="3.5" fill="#1A1F36"/>
+          <circle cx="295" cy="53" r="3.5" fill="#1A1F36"/>
+          <circle cx="295" cy="64" r="3.5" fill="#1A1F36"/>
+          <!-- Pointer arrow -->
+          <path d="M 285 100 L 295 80 L 305 100 Z" fill="#F2B617" opacity="0.9"/>
+          <text x="240" y="120" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#0B1B3F">여기 탭</text>
+        </svg>
+      </div>
+      <div class="step-note">
+        주소창 오른쪽의 <b>점 세 개 (⋮)</b> 아이콘을 누르세요.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <div class="step-title">"앱 설치" 또는 "홈 화면에 추가" 선택</div>
+      </div>
+      <div class="step-illustration">
+        <svg viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Menu dropdown -->
+          <rect x="120" y="10" width="210" height="180" rx="12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+          <rect x="120" y="10" width="210" height="180" rx="12" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="1"/>
+
+          <!-- Menu items -->
+          <text x="140" y="38" font-family="-apple-system, sans-serif" font-size="12" fill="#9CA3AF">새 탭</text>
+          <text x="140" y="64" font-family="-apple-system, sans-serif" font-size="12" fill="#9CA3AF">새 시크릿 탭</text>
+          <text x="140" y="90" font-family="-apple-system, sans-serif" font-size="12" fill="#9CA3AF">방문 기록</text>
+          <text x="140" y="116" font-family="-apple-system, sans-serif" font-size="12" fill="#9CA3AF">다운로드</text>
+
+          <!-- Highlighted item -->
+          <rect x="125" y="130" width="200" height="32" rx="6" fill="#FEF6D9" stroke="#F2B617" stroke-width="2"/>
+          <circle cx="142" cy="146" r="7" fill="#F2B617"/>
+          <text x="142" y="150" font-family="-apple-system, sans-serif" font-size="10" font-weight="900" fill="#0B1B3F" text-anchor="middle">＋</text>
+          <text x="160" y="151" font-family="-apple-system, sans-serif" font-size="13" font-weight="700" fill="#0B1B3F">앱 설치</text>
+
+          <text x="140" y="184" font-family="-apple-system, sans-serif" font-size="12" fill="#9CA3AF">설정</text>
+
+          <!-- Arrow -->
+          <path d="M 80 146 L 115 146" stroke="#F2B617" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 105 138 L 118 146 L 105 154" stroke="#F2B617" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="10" y="150" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#0B1B3F">탭</text>
+        </svg>
+      </div>
+      <div class="step-note">
+        메뉴에서 <b>"앱 설치"</b> 또는 <b>"홈 화면에 추가"</b>를 누르세요.<br>
+        (안드로이드 버전에 따라 이름이 조금 다를 수 있어요)
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">4</div>
+        <div class="step-title">완료! 홈 화면 확인</div>
+      </div>
+      <div class="step-illustration">
+        <svg viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg">
+          <!-- Phone home screen -->
+          <rect x="80" y="10" width="180" height="160" rx="18" fill="#1A2E55"/>
+          <rect x="80" y="10" width="180" height="160" rx="18" fill="url(#hg)" opacity="0.4"/>
+          <defs>
+            <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#4A9FE0"/>
+              <stop offset="1" stop-color="#0B1B3F"/>
+            </linearGradient>
+          </defs>
+          <!-- Status bar -->
+          <text x="170" y="32" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" fill="white" text-anchor="middle">9:41</text>
+
+          <!-- Other app icons (placeholder) -->
+          <rect x="100" y="50" width="28" height="28" rx="7" fill="rgba(255,255,255,0.18)"/>
+          <rect x="140" y="50" width="28" height="28" rx="7" fill="rgba(255,255,255,0.18)"/>
+          <rect x="180" y="50" width="28" height="28" rx="7" fill="rgba(255,255,255,0.18)"/>
+          <rect x="220" y="50" width="28" height="28" rx="7" fill="rgba(255,255,255,0.18)"/>
+
+          <!-- Our app icon - highlighted -->
+          <rect x="100" y="90" width="36" height="36" rx="9" fill="#0B1B3F" stroke="#F2B617" stroke-width="2.5"/>
+          <circle cx="118" cy="108" r="11" fill="#F2B617"/>
+          <path d="M 113 102 Q 118 99 123 102" stroke="#C72030" stroke-width="1.5" fill="none"/>
+          <path d="M 113 114 Q 118 117 123 114" stroke="#C72030" stroke-width="1.5" fill="none"/>
+          <text x="118" y="140" font-family="-apple-system, sans-serif" font-size="8" font-weight="700" fill="white" text-anchor="middle">야구기록</text>
+
+          <!-- Pulse around it -->
+          <rect x="98" y="88" width="40" height="40" rx="11" fill="none" stroke="#F2B617" stroke-width="2" opacity="0.6" class="pulse-target"/>
+
+          <!-- More placeholder icons -->
+          <rect x="150" y="90" width="28" height="28" rx="7" fill="rgba(255,255,255,0.18)"/>
+          <rect x="190" y="90" width="28" height="28" rx="7" fill="rgba(255,255,255,0.18)"/>
+          <rect x="230" y="90" width="28" height="28" rx="7" fill="rgba(255,255,255,0.18)"/>
+
+          <!-- Arrow -->
+          <path d="M 60 108 L 95 108" stroke="#F2B617" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 85 100 L 98 108 L 85 116" stroke="#F2B617" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="step-note">
+        홈 화면에 <b>⚾ 야구기록</b> 아이콘이 생깁니다.<br>
+        이제부터 이 아이콘으로 바로 실행하세요.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ iOS ============ -->
+  <div class="tab-content" id="content-ios">
+
+    <div class="safari-warn">
+      <span class="ic">⚠️</span>
+      <div>
+        아이폰은 <b>반드시 사파리(Safari)로만 가능합니다.</b><br>
+        크롬·네이버앱 등으로 열면 설치 메뉴가 안 보여요.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div class="step-title">사파리(Safari)로 페이지 열기</div>
+      </div>
+      <div class="step-illustration">
+        <svg viewBox="0 0 340 140" xmlns="http://www.w3.org/2000/svg">
+          <!-- iPhone outline -->
+          <rect x="10" y="10" width="320" height="120" rx="18" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+
+          <!-- Safari icon -->
+          <circle cx="50" cy="50" r="22" fill="url(#safari-grad)"/>
+          <defs>
+            <linearGradient id="safari-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#26C6F5"/>
+              <stop offset="1" stop-color="#0890D8"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="13" fill="white"/>
+          <path d="M 50 38 L 53 47 L 62 47 L 55 53 L 58 62 L 50 56 L 42 62 L 45 53 L 38 47 L 47 47 Z" fill="#E74C3C" transform="scale(0.5) translate(50 50)"/>
+          <circle cx="50" cy="50" r="3" fill="white"/>
+
+          <text x="90" y="46" font-family="-apple-system, sans-serif" font-size="14" font-weight="700" fill="#0B1B3F">Safari</text>
+          <text x="90" y="62" font-family="-apple-system, sans-serif" font-size="11" fill="#6B7280">아이폰 기본 브라우저</text>
+
+          <!-- URL bar mockup -->
+          <rect x="22" y="92" width="296" height="28" rx="9" fill="#F1F2F4"/>
+          <text x="32" y="110" font-family="-apple-system, sans-serif" font-size="10" fill="#6B7280">bbonng.github.io/jingubaseball/</text>
+        </svg>
+      </div>
+      <div class="step-note">
+        <b>사파리</b>로 페이지 주소를 열어주세요. <span class="warn">크롬·인앱 브라우저 사용 시 설치 불가능합니다.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div class="step-title">하단 공유 버튼 탭</div>
+      </div>
+      <div class="step-illustration">
+        <svg viewBox="0 0 340 160" xmlns="http://www.w3.org/2000/svg">
+          <!-- iPhone bottom area mockup -->
+          <rect x="60" y="10" width="220" height="140" rx="20" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+
+          <!-- Page content placeholder -->
+          <rect x="76" y="26" width="188" height="6" rx="3" fill="#E5E7EB"/>
+          <rect x="76" y="40" width="160" height="6" rx="3" fill="#E5E7EB"/>
+          <rect x="76" y="54" width="140" height="6" rx="3" fill="#E5E7EB"/>
+
+          <!-- Bottom toolbar -->
+          <rect x="60" y="100" width="220" height="50" rx="0" fill="#F8F9FB"/>
+          <rect x="60" y="100" width="220" height="0.5" fill="#E5E7EB"/>
+
+          <!-- Toolbar icons -->
+          <path d="M 88 125 L 96 119 L 96 131 Z" fill="#3B82F6"/>
+          <path d="M 116 119 L 124 125 L 116 131 Z" fill="#9CA3AF"/>
+
+          <!-- Share button - highlighted -->
+          <circle cx="170" cy="125" r="26" fill="#F2B617" opacity="0.35" class="pulse-target"/>
+          <rect x="160" y="113" width="20" height="24" rx="3" fill="none" stroke="#3B82F6" stroke-width="2"/>
+          <path d="M 170 108 L 170 124 M 165 113 L 170 108 L 175 113" stroke="#3B82F6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- Other icons -->
+          <path d="M 215 119 L 215 131 M 210 125 L 220 125" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
+          <rect x="245" y="118" width="14" height="14" rx="2" fill="none" stroke="#9CA3AF" stroke-width="2"/>
+
+          <!-- Pointer -->
+          <text x="20" y="130" font-family="-apple-system, sans-serif" font-size="12" font-weight="700" fill="#0B1B3F">탭</text>
+          <path d="M 40 125 L 65 125" stroke="#F2B617" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 55 117 L 68 125 L 55 133" stroke="#F2B617" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="step-note">
+        화면 하단의 <b>공유 버튼 (네모 + ↑ 모양)</b>을 누르세요.<br>
+        보통 화면 한가운데 아래쪽에 있습니다.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <div class="step-title">"홈 화면에 추가" 선택</div>
+      </div>
+      <div class="step-illustration">
+        <svg viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Share sheet -->
+          <rect x="40" y="10" width="260" height="180" rx="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+
+          <!-- App row -->
+          <rect x="56" y="22" width="50" height="50" rx="10" fill="#FEE500"/>
+          <text x="81" y="52" font-family="-apple-system, sans-serif" font-size="9" font-weight="700" fill="#3C1E1E" text-anchor="middle">카톡</text>
+
+          <rect x="116" y="22" width="50" height="50" rx="10" fill="#1DA1F2"/>
+          <text x="141" y="52" font-family="-apple-system, sans-serif" font-size="9" font-weight="700" fill="white" text-anchor="middle">메시지</text>
+
+          <rect x="176" y="22" width="50" height="50" rx="10" fill="#3B5998"/>
+          <text x="201" y="52" font-family="-apple-system, sans-serif" font-size="9" font-weight="700" fill="white" text-anchor="middle">메일</text>
+
+          <rect x="236" y="22" width="50" height="50" rx="10" fill="#34A853"/>
+          <text x="261" y="52" font-family="-apple-system, sans-serif" font-size="9" font-weight="700" fill="white" text-anchor="middle">기타</text>
+
+          <line x1="56" y1="88" x2="284" y2="88" stroke="#E5E7EB" stroke-width="1"/>
+
+          <!-- Action items -->
+          <rect x="50" y="98" width="240" height="22" rx="0" fill="transparent"/>
+          <text x="60" y="113" font-family="-apple-system, sans-serif" font-size="12" fill="#9CA3AF">복사</text>
+          <text x="60" y="135" font-family="-apple-system, sans-serif" font-size="12" fill="#9CA3AF">읽기 목록에 추가</text>
+          <text x="60" y="157" font-family="-apple-system, sans-serif" font-size="12" fill="#9CA3AF">북마크 추가</text>
+
+          <!-- Highlighted: Add to Home Screen -->
+          <rect x="50" y="165" width="240" height="26" rx="6" fill="#FEF6D9" stroke="#F2B617" stroke-width="2"/>
+          <text x="60" y="183" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#0B1B3F">＋ 홈 화면에 추가</text>
+
+          <!-- Arrow -->
+          <path d="M 10 178 L 42 178" stroke="#F2B617" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 32 170 L 45 178 L 32 186" stroke="#F2B617" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="step-note">
+        공유 시트에서 <b>"홈 화면에 추가"</b>를 찾아 누르세요.<br>
+        목록 아래쪽에 있어요. 안 보이면 스크롤 내려보세요.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">4</div>
+        <div class="step-title">"추가" 누르고 완료!</div>
+      </div>
+      <div class="step-illustration">
+        <svg viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Confirm sheet -->
+          <rect x="50" y="10" width="240" height="180" rx="14" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5"/>
+
+          <!-- Top bar with Cancel and Add -->
+          <text x="68" y="30" font-family="-apple-system, sans-serif" font-size="13" fill="#9CA3AF">취소</text>
+          <text x="170" y="30" font-family="-apple-system, sans-serif" font-size="14" font-weight="800" fill="#0B1B3F" text-anchor="middle">홈 화면에 추가</text>
+
+          <!-- Add button highlighted -->
+          <rect x="232" y="14" width="50" height="26" rx="6" fill="#0B1B3F" stroke="#F2B617" stroke-width="2" class="pulse-target"/>
+          <text x="257" y="32" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" fill="#F2B617" text-anchor="middle">추가</text>
+
+          <line x1="58" y1="50" x2="282" y2="50" stroke="#E5E7EB" stroke-width="1"/>
+
+          <!-- Preview area -->
+          <rect x="70" y="64" width="48" height="48" rx="11" fill="#0B1B3F"/>
+          <circle cx="94" cy="88" r="14" fill="#F2B617"/>
+          <path d="M 88 82 Q 94 79 100 82" stroke="#C72030" stroke-width="1.5" fill="none"/>
+          <path d="M 88 94 Q 94 97 100 94" stroke="#C72030" stroke-width="1.5" fill="none"/>
+
+          <text x="130" y="86" font-family="-apple-system, sans-serif" font-size="13" font-weight="700" fill="#0B1B3F">야구기록</text>
+          <text x="130" y="104" font-family="-apple-system, sans-serif" font-size="10" fill="#9CA3AF">bbonng.github.io</text>
+
+          <!-- Pointer to Add -->
+          <path d="M 220 80 L 235 60" stroke="#F2B617" stroke-width="3" stroke-linecap="round"/>
+          <path d="M 230 56 L 237 58 L 235 65" stroke="#F2B617" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="190" y="100" font-family="-apple-system, sans-serif" font-size="11" font-weight="700" fill="#0B1B3F">탭</text>
+
+          <!-- After install hint -->
+          <line x1="58" y1="135" x2="282" y2="135" stroke="#E5E7EB" stroke-width="1"/>
+          <text x="170" y="160" font-family="-apple-system, sans-serif" font-size="11" fill="#6B7280" text-anchor="middle">홈 화면에 ⚾ 아이콘 생성됨</text>
+          <text x="170" y="178" font-family="-apple-system, sans-serif" font-size="14" text-anchor="middle">✅</text>
+        </svg>
+      </div>
+      <div class="step-note">
+        오른쪽 위 <b>"추가"</b>를 누르면 끝.<br>
+        홈 화면에 <b>⚾ 야구기록</b> 아이콘이 생깁니다.
+      </div>
+    </div>
+
+  </div>
+
+  <a href="./" class="cta">
+    ⚾ 앱 시작하기 <span class="arrow">→</span>
+  </a>
+
+  <div class="installed-check">
+    <div class="ic">💡</div>
+    <div class="ti">설치 안 됐는데 그냥 써도 되나요?</div>
+    <div class="ds">네, 평소처럼 브라우저에서도 사용 가능합니다.<br>설치는 더 빠르게 실행하고 오프라인에서도 쓰기 위한 옵션이에요.</div>
+  </div>
+
+  <footer>
+    <div>⚾ 야구 기록 PWA · jingubaseball</div>
+    <div class="url">bbonng.github.io/jingubaseball</div>
+  </footer>
+
+</div>
+
+<script>
+// Auto-detect device and switch tab
+const ua = navigator.userAgent;
+const isiOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+const initialOS = isiOS ? 'ios' : 'android';
+
+function setTab(os) {
+  document.querySelectorAll('.os-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.os === os);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => {
+    c.classList.toggle('active', c.id === `content-${os}`);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.os-tab').forEach(tab => {
+  tab.addEventListener('click', () => setTab(tab.dataset.os));
+});
+
+setTab(initialOS);
+</script>
+</body>
+</html>
