@@ -3,7 +3,7 @@
 //  Strategy: stale-while-revalidate for app shell
 //  Update the CACHE version string to force refresh.
 // =====================================================
-const CACHE = 'baseball-record-v1.1.0';
+const CACHE = 'baseball-record-v1.2.0';
 const SHELL = [
   './',
   './index.html',
